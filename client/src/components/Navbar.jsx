@@ -26,12 +26,10 @@ const navLinks = [
     { name: 'Donate', path: '/Donate' },
     { name: 'Adopt', path: '/Adopt' },
     { name: 'Blog', path: '/Blog' },
-    // { name: 'About', path: '/' },
-    //   { name: '', path: '#' }
 ];
 
 const dropdownLinks = [
-    { name: 'Explore', path: '/Community/Explore' },
+    { name: 'Explore', path: '/Community' },
     { name: 'Message', path: '/Community/Message' },
     { name: 'Create', path: '/Community/Create' }
 ];
@@ -40,14 +38,13 @@ export default function Navbar() {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     return (
-        <Box px={4} bg={useColorModeValue('white', 'gray.800')} w={"100vw"}>
+        <Box p={4} bg={useColorModeValue('white', 'gray.800')} w={"100vw"}>
             <Flex h={16} alignItems="center" justifyContent="space-between" mx="auto" >
                 <Link to={'/'} ml={"1vw"} textDecoration={"none"} _hover={"none"}>
                     {/* <Image src={logo} h={20} w={220} /> */}
                     <h1 className='paytone-one-regular'><span id='yellow'>PAW</span>SITIVE</h1>
                 </Link>
-
-                <HStack spacing={8} alignItems="center" mr={17}>
+                <HStack spacing={8} alignItems="center" mr={35} >
                     <HStack as="nav" spacing={6} display={{ base: 'none', md: 'flex' }} alignItems="center">
                         {navLinks.map((link, index) => (
                             <NavLink key={index} {...link} onClose={onClose} />
