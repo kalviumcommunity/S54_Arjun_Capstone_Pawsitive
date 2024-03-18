@@ -1,8 +1,11 @@
 import React from 'react'
+import Navbar from './Navbar'
 
 const Donate = () => {
   return (
-    <div>Donate</div>
+    <div>
+      <Navbar/>
+    </div>
   )
 }
 
