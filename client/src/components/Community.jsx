@@ -12,7 +12,6 @@ import {
   Drawer,
   DrawerContent,
   DrawerOverlay,
-
   IconButton,
   useDisclosure,
   useColorModeValue
@@ -22,11 +21,13 @@ import { AiOutlineTeam, AiOutlineHome } from 'react-icons/ai';
 import { BsFolder2, BsCalendarCheck } from 'react-icons/bs';
 import { FiMenu } from 'react-icons/fi';
 import { RiFlashlightFill } from 'react-icons/ri';
+import Navbar from './Navbar';
 
 export default function Community() {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  return (
+  return (<>
+    {/* <Navbar /> */}
     <Box as="section" bg={useColorModeValue('gray.50', 'gray.700')} minH="100vh" w={'100vw'}>
       <SidebarContent display={{ base: 'none', md: 'unset' }} />
       <Drawer isOpen={isOpen} onClose={onClose} placement="left">
@@ -109,6 +110,7 @@ export default function Community() {
         </Box>
       </Box>
     </Box>
+  </>
   );
 }
 
