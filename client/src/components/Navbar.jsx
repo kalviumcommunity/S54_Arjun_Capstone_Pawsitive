@@ -28,33 +28,34 @@ import { GiHamburgerMenu } from 'react-icons/gi';
 import { AiOutlineClose } from 'react-icons/ai';
 import { BiChevronDown } from 'react-icons/bi';
 import logo from '../assets/logo.png';
-import { AppContext } from '../context/ParentContext';
-import { auth } from '../firebase/config';
+import { AuthContext } from '../context/AuthContext';
+import { auth } from '../firebase/firebase';
 
 const navLinks = [
     { name: 'Donate', path: '/Donate' },
     { name: 'Adopt', path: '/Adopt' },
     { name: 'Blog', path: '/Blog' },
+    {name:'Community',path:'/community'}
 ];
 
 export default function Navbar() {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const Navigate = useNavigate();
-    const { signin, setSignin } = useContext(AppContext);
+    const { signin, setSignin } = useContext(AuthContext);
 
     const handleSignOut = async () => {
         try {
             setSignin(false)
             await signOut(auth)
             console.log("logout successful")
-            Navigate('/signup')
+            Navigate('/login')
         } catch (error) {
             console.log(error);
         }
     };
 
     return (
-        <Box p={4} bg={useColorModeValue('white', 'gray.800')} w={"100vw"}>
+        <Box p={4} bg={useColorModeValue('white', 'gray.800')} w={"100vw"} >
             <Flex h={16} alignItems="center" justifyContent="space-between" mx="auto" >
                 <Link href={'/'} ml={"1vw"} textDecoration={"none"} _hover={"none"}>
                     <h1 className='paytone-one-regular'><span id='yellow'>PAW</span>SITIVE</h1>
@@ -66,7 +67,7 @@ export default function Navbar() {
                         ))}
 
 
-                        <Menu>
+                        {/* <Menu>
                             <MenuButton outline={'none'} >
                                 <HStack><Text _hover={{ fontSize: "lg" }}>Community</Text><BiChevronDown /></HStack>
                             </MenuButton>
@@ -75,7 +76,7 @@ export default function Navbar() {
                                 <Link href='/community/message'><MenuItem>Message</MenuItem></Link>
                                 <Link href='/community/create'><MenuItem>Create</MenuItem></Link>
                             </MenuList>
-                        </Menu>
+                        </Menu> */}
                     </HStack>
                 </HStack>
 
@@ -105,9 +106,9 @@ export default function Navbar() {
                                     <br />
                                 </div>
                             ))}
-                            <Link to={'/Community'} textDecoration={'none'}>
+                            {/* <Link to={'/Community'} textDecoration={'none'}>
                                 <p>Community</p>
-                            </Link>
+                            </Link> */}
                             {signin ? <Button onClick={handleSignOut} bg={"#FBBC05"} size="md" borderRadius={"20px"} display={{ base: 'block', md: 'none' }} _hover={"none"}    >
                                 Log out
                             </Button> :

@@ -16,38 +16,22 @@ import {
     Link,
     Text
 } from '@chakra-ui/react';
-import { auth } from '../firebase/config.js';
+import { auth } from '../firebase/firebase.js';
 import {
-    createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     sendPasswordResetEmail,
     signInWithPopup,
-    onAuthStateChanged,
     GoogleAuthProvider
 } from "firebase/auth";
 import GoogleButton from 'react-google-button';
-import { AppContext } from '../context/ParentContext.jsx';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [show, setShow] = useState(false);
     const handleClick = () => setShow(!show);
-    const { signin, setSignin, userData, setUserData } = useContext(AppContext);
     const [userCredentials, setUserCredentials] = useState({});
     const [error, setError] = useState('');
     const navigate = useNavigate();
-
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            console.log(user)
-            setUserData({ id: user.uid, email: user.email })
-            setSignin(true)
-            navigate("/");
-        } else {
-            console.log('err')
-        }
-    });
-
 
     function handleCredentials(e) {
         setUserCredentials({ ...userCredentials, [e.target.name]: e.target.value });
@@ -56,7 +40,6 @@ const Login = () => {
     function handleLogin(e) {
         e.preventDefault();
         setError("");
-
         signInWithEmailAndPassword(auth, userCredentials.email, userCredentials.password)
             .then((userCredential) => {
                 console.log(userCredential);
@@ -64,6 +47,7 @@ const Login = () => {
             .catch((error) => {
                 setError(error.message);
             });
+        navigate("/");
     }
 
     const googleSignIn = () => {
@@ -72,7 +56,7 @@ const Login = () => {
     };
     const handleGoogleSignIn = async () => {
         try {
-            await googleSignIn();
+            googleSignIn();
         } catch (error) {
             console.log(error);
         }

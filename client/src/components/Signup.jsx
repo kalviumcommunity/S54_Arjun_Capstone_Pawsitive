@@ -17,7 +17,7 @@ import {
     Link,
     Text
 } from '@chakra-ui/react';
-import { auth } from '../firebase/config.js';
+import { auth, db } from '../firebase/firebase.js';
 import { GoogleButton } from 'react-google-button';
 import {
     createUserWithEmailAndPassword,
@@ -27,9 +27,11 @@ import {
     signInWithPopup,
     signInWithRedirect,
     signOut,
-    GoogleAuthProvider
+    GoogleAuthProvider,
+    updateProfile
 } from "firebase/auth";
-import { AppContext } from '../context/ParentContext.jsx';
+import { AuthContext } from '../context/AuthContext.jsx';
+import { doc, setDoc } from 'firebase/firestore';
 
 const Signup = () => {
     const [show, setShow] = useState(false);
@@ -37,43 +39,61 @@ const Signup = () => {
     const navigate = useNavigate();
     const [userCredentials, setUserCredentials] = useState({});
     const [error, setError] = useState('');
-    const { signin, setSignin, userData, setUserData } = useContext(AppContext);
+    const [loading, setLoading] = useState(false);
+    const { signin, setSignin, userData, setUserData } = useContext(AuthContext);
 
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            console.log(user)
-            setUserData({ id: user.uid, email: user.email })
-            setSignin(true)
-            navigate("/");
-        } else {
-            console.log('err')
-        }
-    });
+    // onAuthStateChanged(auth, (user) => {
+    //     if (user) {
+    //         console.log(user)
+    //         setUserData({ id: user.uid, email: user.email })
+    //         setSignin(true)
+    //         // navigate("/");
+    //     } else {
+    //         console.log('err')
+    //     }
+    // })
 
-    function handleCredentials (e) {
-        setUserCredentials ({ ...userCredentials, [e.target.name]: e.target.value });
+    function handleCredentials(e) {
+        setUserCredentials({ ...userCredentials, [e.target.name]: e.target.value });
     }
-
-    function handleSignup(e) {
+    const handleSignup = async (e) => {
+        setLoading(true);
         e.preventDefault();
         setError("");
-        createUserWithEmailAndPassword(auth, userCredentials.email, userCredentials.password)
-            .then((userCredential) => {
-                console.log(userCredential);
-            })
-            .catch((error) => {
-                setError(error.message);
+        const email=userCredentials.email;
+        const password=userCredentials.password
+        const displayName = userCredentials.name;
+        const defaultProfile='https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/test1711389999523?alt=media&token=e8c24e73-c309-4ba8-9d39-0f33913c6d51'
+        try {
+            const res = await createUserWithEmailAndPassword(auth, email, password);
+            await updateProfile(auth.currentUser, {
+                displayName,
+                photoURL: defaultProfile,
             });
-    }
+            await setDoc(doc(db, "users", res.user.uid), {
+                uid: res.user.uid,
+                displayName,
+                email,
+                photoURL: defaultProfile,
+            });
+            await setDoc(doc(db, "userChats", res.user.uid), {});
+            navigate("/");
+        } catch (err) {
+            console.log("err: ", err);
+            setError(err.message);
+            setLoading(false);
+        }
+    };
     const googleSignIn = () => {
         const provider = new GoogleAuthProvider();
-        signInWithRedirect(auth, provider)
+        signInWithPopup(auth, provider)
     };
     const handleGoogleSignIn = async () => {
         try {
-            await googleSignIn();
+            googleSignIn();
         } catch (error) {
             console.log(error);
+            setError(err.message);
         }
     };
     return (
@@ -95,14 +115,18 @@ const Signup = () => {
                             spacing={8}
                         >
                             <VStack spacing={4} w="100%">
+                                <FormControl id="name">
+                                    <FormLabel>Name</FormLabel>
+                                    <Input onChange={(e) => { handleCredentials(e) }} rounded="md" type="text" name='name' required />
+                                </FormControl>
                                 <FormControl id="email">
                                     <FormLabel>Email</FormLabel>
-                                    <Input onChange={(e) => { handleCredentials(e) }} rounded="md" type="email" name='email' />
+                                    <Input onChange={(e) => { handleCredentials(e) }} rounded="md" type="email" name='email' required />
                                 </FormControl>
                                 <FormControl id="password">
                                     <FormLabel>Password</FormLabel>
                                     <InputGroup size="md">
-                                        <Input onChange={(e) => { handleCredentials(e) }} name='password' rounded="md" type={show ? 'text' : 'password'} />
+                                        <Input onChange={(e) => { handleCredentials(e) }} name='password' rounded="md" type={show ? 'text' : 'password'} required />
                                         <InputRightElement width="4.5rem">
                                             <Button
                                                 h="1.75rem"
@@ -122,10 +146,8 @@ const Signup = () => {
                             </VStack>
                             <VStack w="100%">
                                 <Stack direction="row" justifyContent="space-between" w="100%">
-                                    <Checkbox colorScheme="green" size="md">
-                                        I agree to T&C
-                                    </Checkbox>
-                                    <Link href='/login' textDecoration={'underline'}>Have an account??</Link>
+                                    <Link textDecoration={'underline'}>Forgot password</Link>
+                                    <Link href='/login' textDecoration={'underline'}>Login??</Link>
                                 </Stack>
                                 <Button
                                     onClick={(e) => { handleSignup(e) }}
@@ -139,7 +161,7 @@ const Signup = () => {
                                 >
                                     Sign up
                                 </Button>
-
+                                {loading && <p>Creating your account, please wait...</p>}
                                 {error && <p>{error}</p>}
 
                                 <Text size={'2xl'}>----------------- OR -----------------</Text>

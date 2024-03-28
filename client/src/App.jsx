@@ -1,8 +1,8 @@
 import './App.css'
 import { ChakraProvider } from '@chakra-ui/react'
 import { Route, Routes } from 'react-router-dom'
-import ParentContext, { AppContext } from './context/ParentContext'
 import Home from './components/Home'
+import "./style.scss";
 import Community from './components/Community'
 import Blog from './components/Blog'
 import Adopt from './components/Adopt'
