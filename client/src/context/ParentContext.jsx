@@ -13,7 +13,7 @@ const ParentContext = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUserData(currentUser);
-      setSignin(true)
+      // setSignin(true)
       console.log('Userdata', currentUser)
     });
     return () => {
