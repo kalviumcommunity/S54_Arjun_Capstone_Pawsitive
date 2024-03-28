@@ -1,8 +1,11 @@
 import React from 'react'
+import Navbar from './Navbar'
 
 const Adopt = () => {
   return (
-    <div>Adopt</div>
+    <div>
+      <Navbar/>
+    </div>
   )
 }
 

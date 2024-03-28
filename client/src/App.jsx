@@ -7,6 +7,8 @@ import Community from './components/Community'
 import Blog from './components/Blog'
 import Adopt from './components/Adopt'
 import Donate from './components/Donate'
+import Signup from './components/Signup'
+import Login from './components/Login'
 
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
       <Routes>
         <Route path='/' element={<Home/>}></Route>
         <Route path="*" element={<h1>PAGE NOT FOUND</h1>}></Route>
+        <Route path='/signup' element={<Signup/>}></Route>
+        <Route path='/login' element={<Login/>}></Route>
         <Route path='/Community' element={<Community/>}></Route>
         <Route path='/Blog' element={<Blog/>}></Route>
         <Route path='/Adopt' element={<Adopt/>}></Route>
