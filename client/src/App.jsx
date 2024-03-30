@@ -9,20 +9,30 @@ import Adopt from './components/Adopt'
 import Donate from './components/Donate'
 import Signup from './components/Signup'
 import Login from './components/Login'
+import { extendTheme } from '@chakra-ui/react'
 
+const breakpoints = {
+  sm: '320px',
+  md: '768px',
+  lg: '960px',
+  xl: '1200px',
+}
+
+const theme = extendTheme({ breakpoints })
 
 function App() {
+  
   return (
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <Routes>
-        <Route path='/' element={<Home/>}></Route>
+        <Route path='/' element={<Home />}></Route>
         <Route path="*" element={<h1>PAGE NOT FOUND</h1>}></Route>
-        <Route path='/signup' element={<Signup/>}></Route>
-        <Route path='/login' element={<Login/>}></Route>
-        <Route path='/Community' element={<Community/>}></Route>
-        <Route path='/Blog' element={<Blog/>}></Route>
-        <Route path='/Adopt' element={<Adopt/>}></Route>
-        <Route path='/Donate' element={<Donate/>}></Route>
+        <Route path='/signup' element={<Signup />}></Route>
+        <Route path='/login' element={<Login />}></Route>
+        <Route path='/Community' element={<Community />}></Route>
+        <Route path='/Blog' element={<Blog />}></Route>
+        <Route path='/Adopt' element={<Adopt />}></Route>
+        <Route path='/Donate' element={<Donate />}></Route>
       </Routes>
     </ChakraProvider>
   )

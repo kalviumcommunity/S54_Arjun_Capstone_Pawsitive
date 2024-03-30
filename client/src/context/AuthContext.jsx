@@ -7,12 +7,14 @@ export const AuthContext = createContext();
 const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState({});
   const [signin, setSignin] = useState(false);
-
+  const [community,setCommunity]=useState('explore')
+  const [mob,setMob]=useState(false)
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
+      console.log(user)
       setSignin(true)
-      console.log('userdata:',user);
+      console.log('userdata:', user);
     });
 
     return () => {
@@ -21,7 +23,7 @@ const AuthContextProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ signin, setSignin, currentUser}}>
+    <AuthContext.Provider value={{mob,setMob,community,setCommunity, signin, setSignin, currentUser,setCurrentUser}}>
       {children}
     </AuthContext.Provider>
   );

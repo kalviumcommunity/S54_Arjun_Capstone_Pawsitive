@@ -7,7 +7,7 @@ import { db } from "../../firebase/firebase";
 const Chats = () => {
   const [chats, setChats] = useState([]);
 
-  const { currentUser } = useContext(AuthContext);
+  const { currentUser,mob,setMob } = useContext(AuthContext);
   const { dispatch } = useContext(ChatContext);
 
   useEffect(() => {
@@ -26,6 +26,7 @@ const Chats = () => {
 
   const handleSelect = (u) => {
     dispatch({ type: "CHANGE_USER", payload: u });
+    setMob(true);
   };
 
   return (
