@@ -26,10 +26,10 @@ const Message = ({ message }) => {
           }
           alt=""
         />
-        {/* <span>{message.date.timestamp_}</span> */}
+        <span>{message.date.timestamp_}</span>
       </div>
       <div className="messageContent">
-        <p>{message.text}</p>
+        <p className="msgText">{message.text}</p>
         {message.img && <img src={message.img} alt="" />}
       </div>
     </div>

@@ -13,12 +13,12 @@
     @content;
   }
 }
-#back{
-    display: none !important;
-  @include mobile{
+#back {
+  display: none !important;
+  @include mobile {
     display: block !important;
   }
-  @include tablet{
+  @include tablet {
     display: block !important;
   }
 }
@@ -29,11 +29,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  @include mobile{
+  @include mobile {
     width: 100%;
     height: 78vh;
   }
-  @include tablet{
+  @include tablet {
     width: 100%;
     height: 78vh;
   }
@@ -44,7 +44,7 @@
     height: 95%;
     display: flex;
     overflow: hidden;
-    @include tablet{
+    @include tablet {
       width: 90%;
     }
 
@@ -117,10 +117,10 @@
     .chat {
       flex: 2;
       border-left: solid 2px black;
-      @include mobile{
+      @include mobile {
         border-left: none;
       }
-      @include tablet{
+      @include tablet {
         border-left: none;
       }
       .chatInfo {
@@ -157,16 +157,20 @@
         height: 78%;
         overflow-y: scroll;
         overflow-x: hidden;
-
         .message {
           display: flex;
           gap: 20px;
           margin-bottom: 20px;
+          @include mobile{
+            gap: 6px;
+          }
+          @include tablet{
+            gap: 6px;
+          }
 
           .messageInfo {
             display: flex;
             flex-direction: column;
-            color: rgb(255, 255, 255);
             font-weight: 300;
 
             img {
@@ -177,17 +181,24 @@
             }
           }
           .messageContent {
-            max-width: 80%;
+            max-width: 30vw;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            @include mobile{
+              max-width: 55vw;
+            }
+            @include tablet{
+              max-width: 55vw;
+            }
 
             p {
-              background-color: white;
+              background-color: rgb(255, 255, 255);
               padding: 10px 20px;
               border-radius: 0px 10px 10px 10px;
-              max-width: fit-content;
-            }
+              max-width: 100%;
+              word-wrap: break-word;
+}
 
             img {
               width: 50%;
@@ -202,12 +213,12 @@
               p {
                 background-color: #ffffff;
                 color: rgb(0, 0, 0);
-                border-radius: 10px 10px 0px 10px;
-                -webkit-border-radius: 10px 10px 0px 10px;
-                -moz-border-radius: 10px 10px 0px 10px;
-                -ms-border-radius: 10px 10px 0px 10px;
-                -o-border-radius: 10px 10px 0px 10px;
-              }
+                border-radius: 10px 0px 10px 10px;
+                -webkit-border-radius: 10px 0px 10px 10px;
+                -moz-border-radius: 10px 0px 10px 10px;
+                -ms-border-radius: 10px 0px 10px 10px;
+                -o-border-radius: 10px 0px 10px 10px;
+}
             }
           }
         }
@@ -241,23 +252,32 @@
 
           img {
             height: 24px;
-            width: 30px;
+            width: 35px;
             cursor: pointer;
+            @include mobile {
+            }
           }
 
           button {
             border: none;
             padding: 13px;
-            border-radius: 30%;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: #ffcc37;
+            outline: none;
             cursor: pointer;
-            -webkit-border-radius: 30%;
-            -moz-border-radius: 30%;
-            -ms-border-radius: 30%;
-            -o-border-radius: 30%;
+            -webkit-border-radius: 50%;
+            -moz-border-radius: 50%;
+            -ms-border-radius: 50%;
+            -o-border-radius: 50%;
+            img {
+              width: 30px;
+            }
+            @include mobile {
+              padding: 10px;
+            }
           }
         }
       }
