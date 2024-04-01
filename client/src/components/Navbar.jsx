@@ -35,13 +35,13 @@ const navLinks = [
     { name: 'Donate', path: '/Donate' },
     { name: 'Adopt', path: '/Adopt' },
     { name: 'Blog', path: '/Blog' },
-    {name:'Community',path:'/community'}
+    { name: 'Community', path: '/community' }
 ];
 
 export default function Navbar() {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const Navigate = useNavigate();
-    const { signin, setSignin } = useContext(AuthContext);
+    const { signin, setSignin, currentUser } = useContext(AuthContext);
 
     const handleSignOut = async () => {
         try {
@@ -80,11 +80,18 @@ export default function Navbar() {
                     </HStack>
                 </HStack>
 
-                {signin ? <Button onClick={handleSignOut} bg={"#FBBC05"} size="lg" borderRadius={"30px"} display={{ base: 'none', md: 'block' }} _hover={"none"} mr={30} color={'white'} outline={'none'}>
-                    Log out
-                </Button> : <Button onClick={() => { Navigate('/signup') }} bg={"#FBBC05"} size="lg" borderRadius={"30px"} display={{ base: 'none', md: 'block' }} _hover={"none"} mr={30} color={'white'} outline={'none'}>
-                    Sign up
-                </Button>}
+                {signin ?
+                    <div style={{display:'flex',alignItems:'center',justifyContent:'space-around'}}>
+                        <Button onClick={handleSignOut} bg={"#FBBC05"} size="lg" borderRadius={"30px"} display={{ base: 'none', md: 'block' }} _hover={"none"} mr={30} color={'white'} outline={'none'}>
+                            Log out
+                        </Button>
+                        <button style={{ borderRadius: '50%' }}  display={{ base: 'inherit', md: 'none' }}>
+                            <img style={{ borderRadius: '50%' }} width={'45vw'} src={currentUser.photoURL} alt="" />
+                        </button>
+                    </div>
+                    : <Button onClick={() => { Navigate('/signup') }} bg={"#FBBC05"} size="lg" borderRadius={"30px"} display={{ base: 'none', md: 'block' }} _hover={"none"} mr={30} color={'white'} outline={'none'}>
+                        Sign up
+                    </Button>}
                 <IconButton
                     size="md"
                     icon={<GiHamburgerMenu />}
@@ -100,19 +107,21 @@ export default function Navbar() {
                     <DrawerContent>
                         <DrawerCloseButton />
                         <DrawerBody textAlign='center' display={'flex'} flexDirection={'column'} alignItems={'center'} padding={'7vh 0 '}>
+                            {signin &&
+                                <button style={{ borderRadius: '50%',marginBottom:'3vw' }}>
+                                    <img style={{ borderRadius: '50%' }} width={'60vw'} src={currentUser.photoURL} alt="" />
+                                </button>
+                            }
                             {navLinks.map((link, index) => (
                                 <div>
                                     <NavLink key={index} {...link} onClose={onClose} border={'1px solid black'} />
                                     <br />
                                 </div>
                             ))}
-                            {/* <Link to={'/Community'} textDecoration={'none'}>
-                                <p>Community</p>
-                            </Link> */}
                             {signin ? <Button onClick={handleSignOut} bg={"#FBBC05"} size="md" borderRadius={"20px"} display={{ base: 'block', md: 'none' }} _hover={"none"}    >
                                 Log out
                             </Button> :
-                                <Button onClick={() => { Navigate('/signup') }} bg={"#FBBC05"} size="md" borderRadius={"20px"} display={{ base: 'block', md: 'none' }} _hover={"none"}   color={'white'}>
+                                <Button onClick={() => { Navigate('/signup') }} bg={"#FBBC05"} size="md" borderRadius={"20px"} display={{ base: 'block', md: 'none' }} _hover={"none"} color={'white'}>
                                     Sign up
                                 </Button>}
                         </DrawerBody>

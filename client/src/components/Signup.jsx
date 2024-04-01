@@ -63,7 +63,7 @@ const Signup = () => {
         const email=userCredentials.email;
         const password=userCredentials.password
         const displayName = userCredentials.name;
-        const defaultProfile='https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/test1711389999523?alt=media&token=e8c24e73-c309-4ba8-9d39-0f33913c6d51'
+        const defaultProfile='https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/Group%2035913.png?alt=media&token=857c7bc3-4f1f-47d6-ba8b-355944132384'
         try {
             const res = await createUserWithEmailAndPassword(auth, email, password);
             await updateProfile(auth.currentUser, {
@@ -86,7 +86,7 @@ const Signup = () => {
     };
     const googleSignIn = () => {
         const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider)
+        signInWithRedirect(auth, provider)
     };
     const handleGoogleSignIn = async () => {
         try {
