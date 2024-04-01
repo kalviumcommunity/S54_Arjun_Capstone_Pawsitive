@@ -12,8 +12,10 @@
     font-style: normal;
     color: black;
 }
-
-body{
+.bi-search{
+    cursor: pointer;
+}
+body{   
     overflow-x: hidden;
 }
 

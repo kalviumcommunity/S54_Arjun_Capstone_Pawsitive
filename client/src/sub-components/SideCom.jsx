@@ -10,19 +10,19 @@ const SideCom = () => {
 
     return (
         <>
-            <VStack w={'20vw'} p={'2vw'} gap={'2vw'} justifyContent={'center'} display={{ base: "none", md: "flex" }}>
-                <Button onClick={() => setCommunity('explore')} display={'flex'} justifyContent={'space-between'} gap={'1vw'} bg={community == 'explore' ? "#FBBC05" : 'white'} size="lg" border={'3px solid #FBBC05'} borderRadius={"30px"} _hover={'none'} color={'black'} outline={'none'}>
+            <VStack w={'15vw'} p={'2vw'} gap={'2vw'} justifyContent={'center'} display={{ base: "none", md: "flex" }}>
+                <button onClick={() => setCommunity('explore')} style={{display:'flex',gap:'1vw',border:'2px solid #FBBC05',borderRadius:'30px',backgroundColor:community=='explore'?'#FBBC05':'Transparent',justifyContent:'center',alignItems:'center',padding:'5px 10px',outline:'none',paddingLeft:'10px'}}>
                     <img width={'30vw'} src={explore} alt="" />
-                    <Text fontSize={'2xl'} paddingRight={'2vw'}>Explore</Text>
-                </Button>
-                <Button onClick={() => setCommunity('message')} display={'flex'} justifyContent={'space-between'} gap={'1vw'} bg={community == 'message' ? "#FBBC05" : 'white'} size="lg" border={'3px solid #FBBC05'} borderRadius={"30px"} _hover={'none'} color={'black'} outline={'none'}>
+                    <Text fontSize={'2xl'} paddingRight={'1vw'}>Explore</Text>
+                </button>
+                <button onClick={() => setCommunity('message')} style={{display:'flex',gap:'1vw',border:'2px solid #FBBC05',borderRadius:'30px',backgroundColor:community=='message'?'#FBBC05':'Transparent',justifyContent:'center',alignItems:'center',padding:'5px 10px',outline:'none',paddingLeft:'10px'}}>
                     <img width={'30vw'} src={message} alt="" />
-                    <Text fontSize={'2xl'} paddingRight={'1vw'}>Message</Text>
-                </Button>
-                <Button onClick={() => setCommunity('create')} display={'flex'} justifyContent={'space-between'} gap={'1vw'} bg={community == 'create' ? "#FBBC05" : 'white'} size="lg" border={'3px solid #FBBC05'} borderRadius={"30px"} _hover={'none'} color={'black'} outline={'none'}>
+                    <Text fontSize={'2xl'} paddingRight={'0.7vw'}>Message</Text>
+                </button>
+                <button onClick={() => setCommunity('create')} style={{display:'flex',gap:'1vw',border:'2px solid #FBBC05',borderRadius:'30px',backgroundColor:community=='create'?'#FBBC05':'Transparent',justifyContent:'center',alignItems:'center',padding:'5px 10px',outline:'none',paddingLeft:'10px'}}>
                     <img width={'30vw'} src={create} alt="" />
-                    <Text fontSize={'2xl'} paddingRight={'2.5vw'}>Create</Text>
-                </Button>
+                    <Text fontSize={'2xl'} paddingRight={'2vw'}>Create</Text>
+                </button>
             </VStack>
 
             <HStack w={'90%'} position={'absolute'} bottom={'5px'} border={'2px solid #FBBC05'} borderRadius={'30px'} display={{ base: 'flex', md: 'none' }} h={'12vw'} justifyContent={'space-around'}>
