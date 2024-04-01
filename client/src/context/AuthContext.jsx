@@ -13,7 +13,9 @@ const AuthContextProvider = ({ children }) => {
     const unsub = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       console.log(user)
-      setSignin(true)
+      if(user){
+        setSignin(true)
+      }
       console.log('userdata:', user);
     });
 
