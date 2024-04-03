@@ -85,7 +85,7 @@ export default function Navbar() {
                         <Button onClick={handleSignOut} bg={"#FBBC05"} size="lg" borderRadius={"30px"} display={{ base: 'none', md: 'block' }} _hover={"none"} mr={30} color={'white'} outline={'none'}>
                             Log out
                         </Button>
-                        <button style={{ borderRadius: '50%' }}  display={{ base: 'inherit', md: 'none' }}>
+                        <button onClick={()=>Navigate(`/Profile/${currentUser.uid}`)} id='profile-pic' style={{ borderRadius: '50%' }}  display={{ base: 'inherit', md: 'none',xl:'none',sm:'none' }}>
                             <img style={{ borderRadius: '50%' }} width={'45vw'} src={currentUser.photoURL} alt="" />
                         </button>
                     </div>

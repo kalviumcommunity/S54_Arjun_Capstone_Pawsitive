@@ -10,6 +10,7 @@ import Donate from './components/Donate'
 import Signup from './components/Signup'
 import Login from './components/Login'
 import { extendTheme } from '@chakra-ui/react'
+import Profile from './components/Profile';
 
 const breakpoints = {
   sm: '320px',
@@ -23,7 +24,7 @@ const theme = extendTheme({ breakpoints })
 function App() {
   
   return (
-    <ChakraProvider theme={theme}>
+    <ChakraProvider>
       <Routes>
         <Route path='/' element={<Home />}></Route>
         <Route path="*" element={<h1>PAGE NOT FOUND</h1>}></Route>
@@ -32,6 +33,7 @@ function App() {
         <Route path='/Community' element={<Community />}></Route>
         <Route path='/Blog' element={<Blog />}></Route>
         <Route path='/Adopt' element={<Adopt />}></Route>
+        <Route path='/Profile/:uid' element={<Profile/>}></Route>
         <Route path='/Donate' element={<Donate />}></Route>
       </Routes>
     </ChakraProvider>
