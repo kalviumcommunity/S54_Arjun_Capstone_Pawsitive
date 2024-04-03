@@ -22,6 +22,24 @@
     display: block !important;
   }
 }
+#profile-pic{
+  display: inherit !important;
+  @include mobile {
+    display: none !important;
+  }
+  @include tablet {
+    display: none !important;
+  }
+}
+#msg-pic{
+  width: 2vw;
+  @include mobile {
+    width: 6vw;
+  }
+  @include tablet {
+    width: 6vw;
+  }
+}
 .home {
   background-color: #ffffff;
   height: 85vh;
