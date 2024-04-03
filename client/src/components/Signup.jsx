@@ -40,18 +40,18 @@ const Signup = () => {
     const [userCredentials, setUserCredentials] = useState({});
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { signin, setSignin, userData, setUserData } = useContext(AuthContext);
+    const { signin, setSignin, setCurrentUser } = useContext(AuthContext);
 
-    // onAuthStateChanged(auth, (user) => {
-    //     if (user) {
-    //         console.log(user)
-    //         setUserData({ id: user.uid, email: user.email })
-    //         setSignin(true)
-    //         // navigate("/");
-    //     } else {
-    //         console.log('err')
-    //     }
-    // })
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            console.log(user)
+            setCurrentUser(user)
+            setSignin(true)
+            navigate("/");
+        } else {
+            console.log('err')
+        }
+    })
 
     function handleCredentials(e) {
         setUserCredentials({ ...userCredentials, [e.target.name]: e.target.value });
@@ -86,7 +86,7 @@ const Signup = () => {
     };
     const googleSignIn = () => {
         const provider = new GoogleAuthProvider();
-        signInWithRedirect(auth, provider)
+        signInWithPopup(auth, provider)
     };
     const handleGoogleSignIn = async () => {
         try {

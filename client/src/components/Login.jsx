@@ -21,10 +21,13 @@ import {
     signInWithEmailAndPassword,
     sendPasswordResetEmail,
     signInWithPopup,
-    GoogleAuthProvider
+    GoogleAuthProvider,
+    signInWithRedirect,
+    onAuthStateChanged
 } from "firebase/auth";
 import GoogleButton from 'react-google-button';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext.jsx';
 
 const Login = () => {
     const [show, setShow] = useState(false);
@@ -32,6 +35,17 @@ const Login = () => {
     const [userCredentials, setUserCredentials] = useState({});
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const {setCurrentUser,setSignin}=useContext(AuthContext)
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            console.log(user)
+            setCurrentUser(user)
+            setSignin(true)
+            navigate("/");
+        } else {
+            console.log('err')
+        }
+    })
 
     function handleCredentials(e) {
         setUserCredentials({ ...userCredentials, [e.target.name]: e.target.value });
