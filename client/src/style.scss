@@ -40,6 +40,23 @@
     width: 6vw;
   }
 }
+#create-blog{
+  width: 50vw;
+  @include mobile {
+    width: 95vw !important;
+  }
+  @include tablet {
+    width: 95vw !important;
+  }
+  .quill{
+    @include mobile {
+      height: 60vw !important;
+    }
+    @include tablet {
+      height: 60vw !important;
+    }
+  }
+}
 .home {
   background-color: #ffffff;
   height: 85vh;
