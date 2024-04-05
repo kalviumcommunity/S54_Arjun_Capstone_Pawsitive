@@ -2,10 +2,10 @@ const Blogs = require("../Models/BlogModel");
 
 const createBlog = async (req, res) => {
   try {
-    const { title, summary, category, img, content, createdBy } = req.body;
+    const { title, headline, category, img, content, createdBy } = req.body;
     const blog = new Blogs({
       title,
-      summary,
+      headline,
       category,
       img,
       content,
@@ -19,7 +19,17 @@ const createBlog = async (req, res) => {
   }
 };
 
+const getAllBlogs = async (req, res) => {
+  try {
+      const allBlogs = await Blogs.find();
+      res.status(200).json(allBlogs);
+  } catch (error) {
+      console.error('Error getting blogs:', error.message);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 module.exports = {
   createBlog,
+  getAllBlogs
 };
