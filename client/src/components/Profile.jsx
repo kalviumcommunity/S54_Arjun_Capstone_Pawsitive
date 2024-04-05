@@ -44,7 +44,7 @@ const Profile = () => {
           <Image src={user.photoURL} borderRadius={'50%'} alt="" w={{ base: '35vw', md: '12vw' }} />
           {/* <button><img id='msg-pic' src={Message} alt="" /></button> */}
           <HStack ml={'1vw'}>
-            <Text fontWeight={'600'} fontSize={'3xl'}>{currentUser.displayName} </Text>
+            <Text fontWeight={'600'} fontSize={'3xl'}>{user.displayName} </Text>
             <img  src={own?edit:Message} alt="" style={{width:own?'2vw':'1vw',cursor:'pointer'}}/>
           </HStack>
           <Text>{user.bio}</Text>

@@ -1,8 +1,8 @@
-require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
+require("dotenv").config();
 
 app.use(cors());
 
@@ -12,7 +12,8 @@ mongoose
   .catch((err) => console.error("Failed to connect to MongoDB ❌", err));
 
 app.use(express.json());
-
+const BlogRoutes = require("./Routes/BlogRoutes")
+app.use('/blog', BlogRoutes);
 app.get("/ping", (req, res) => {
   res.send("pong");
 });

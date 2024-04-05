@@ -11,6 +11,7 @@ import Signup from './components/Signup'
 import Login from './components/Login'
 import { extendTheme } from '@chakra-ui/react'
 import Profile from './components/Profile';
+import CreateBlog from './components/CreateBlog';
 
 const breakpoints = {
   sm: '320px',
@@ -32,6 +33,7 @@ function App() {
         <Route path='/login' element={<Login />}></Route>
         <Route path='/Community' element={<Community />}></Route>
         <Route path='/Blog' element={<Blog />}></Route>
+        <Route path='/CreateBlog' element={<CreateBlog/>}></Route>
         <Route path='/Adopt' element={<Adopt />}></Route>
         <Route path='/Profile/:uid' element={<Profile/>}></Route>
         <Route path='/Donate' element={<Donate />}></Route>
