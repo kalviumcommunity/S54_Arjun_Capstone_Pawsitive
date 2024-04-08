@@ -29,7 +29,24 @@ const getAllBlogs = async (req, res) => {
   }
 };
 
+const getBlog = async (req, res) => {
+  const { pid } = req.params
+
+  try {
+      const blog = await Blogs.findOne({ _id: pid });
+
+      if (!blog) {
+          return res.status(404).json({ message: 'blog Not Found',blog });
+      }
+      res.status(200).json(blog);
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ err: 'Internal Server Error' });
+  }
+}
+
 module.exports = {
   createBlog,
-  getAllBlogs
+  getAllBlogs,
+  getBlog
 };
