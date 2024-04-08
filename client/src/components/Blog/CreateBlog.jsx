@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
-import Navbar from './Navbar'
+import Navbar from '../Navbar'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import axios from 'axios';
 import { Button, Text } from '@chakra-ui/react'
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../../context/AuthContext';
 const CreateBlog = () => {
     const modules = {
         toolbar: [
