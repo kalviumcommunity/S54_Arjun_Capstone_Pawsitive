@@ -73,7 +73,7 @@ const Blog = () => {
   return (
     <>
       <Navbar />
-      <div style={{ padding: "3vw 8vw", display: 'flex', flexDirection: 'column', justifyContent: "space-between", gap: '2vw' }}>
+      <div style={{ padding: "3vw 8vw",display: 'flex', flexDirection: 'column', justifyContent: "space-between", gap: '2vw' }}>
         {
           blogs.map((blog) => (
             <Card
@@ -99,8 +99,8 @@ const Blog = () => {
                     </CardBody>
                     <CardFooter style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                       <div style={{ display: "flex", gap: "1vw", alignItems: "center" }}>
-                        <img onClick={() => handleProfileClick(blog.createdBy)} style={{ borderRadius: "50%", cursor: "pointer", width: "2vw" }} src={bloggers[blog.createdBy].photoURL} alt="profile-pic" />
-                        <Text>
+                        <img onClick={() => handleProfileClick(blog.createdBy)} id='blogger-pic' style={{ borderRadius: "50%", cursor: "pointer"}} src={bloggers[blog.createdBy].photoURL} alt="profile-pic" />
+                        <Text fontSize={{base:"2xl",md:"1xl"}}>
                           {bloggers[blog.createdBy].displayName}
                         </Text>
                       </div>
