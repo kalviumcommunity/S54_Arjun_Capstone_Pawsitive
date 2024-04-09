@@ -108,7 +108,7 @@ export default function Navbar() {
                         <DrawerCloseButton />
                         <DrawerBody textAlign='center' display={'flex'} flexDirection={'column'} alignItems={'center'} padding={'7vh 0 '}>
                             {signin &&
-                                <button style={{ borderRadius: '50%',marginBottom:'3vw' }}>
+                                <button style={{ borderRadius: '50%',marginBottom:'3vw' }} onClick={()=>Navigate(`/Profile/${currentUser.uid}`)}>
                                     <img style={{ borderRadius: '50%' }} width={'60vw'} src={currentUser.photoURL} alt="" />
                                 </button>
                             }
