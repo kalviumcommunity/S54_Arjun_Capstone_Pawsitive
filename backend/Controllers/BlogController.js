@@ -10,6 +10,7 @@ const createBlog = async (req, res) => {
       img,
       content,
       createdBy,
+      comments:[],
     });
     const newBlog = await blog.save();
     res.status(201).json({ message: "Blog Created Successfully", blog:newBlog });
@@ -43,10 +44,50 @@ const getBlog = async (req, res) => {
       console.error(err);
       res.status(500).json({ err: 'Internal Server Error' });
   }
-}
+};
+
+const postComment = async (req, res) => {
+  try {
+    const { blogId } = req.params;
+    const { commenterId, content } = req.body;
+    
+    const blog = await Blogs.findById(blogId);
+    
+    if (!blog) {
+      return res.status(404).json({ message: 'Blog not found' });
+    }
+    
+    blog.comments.push({ commenterId, content, dateCreated: new Date() });
+    
+    await blog.save();
+    
+    res.status(201).json({ message: 'Comment added successfully', blog });
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+const getComments = async (req, res) => {
+  try {
+    const { blogId } = req.params;
+    const blog = await Blogs.findById(blogId);
+    
+    if (!blog) {
+      return res.status(404).json({ message: 'Blog not found' });
+    }
+    
+    res.status(200).json({ comments: blog.comments });
+  } catch (error) {
+    console.error('Error getting comments:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
 
 module.exports = {
   createBlog,
   getAllBlogs,
-  getBlog
+  getBlog,
+  postComment,
+  getComments
 };

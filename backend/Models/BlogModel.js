@@ -1,5 +1,20 @@
 const mongoose = require('mongoose')
 
+const CommentSchema = new mongoose.Schema({
+  commenterId: {
+      type: String,
+      required: true,
+  },
+  content: {
+      type: String,
+      required: true,
+  },
+  dateCreated: {
+      type: Date,
+      default: Date.now,
+  },
+});
+
 const BlogSchema = new mongoose.Schema(
   {
     title: {
@@ -37,7 +52,8 @@ const BlogSchema = new mongoose.Schema(
     views: {
       type: Number,
       default: 0,
-    }
+    },
+    comments:[CommentSchema],
   }
 )
 
