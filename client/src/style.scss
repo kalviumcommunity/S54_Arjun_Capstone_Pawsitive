@@ -40,6 +40,15 @@
     width: 6vw;
   }
 }
+#blogger-pic{
+  width: 2.5vw;
+  @include mobile {
+    width: 6vw;
+  }
+  @include tablet {
+    width: 6vw;
+  }
+}
 #create-blog{
   width: 50vw;
   @include mobile {

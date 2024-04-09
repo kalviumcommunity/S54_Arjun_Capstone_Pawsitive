@@ -5,6 +5,7 @@ import 'react-quill/dist/quill.snow.css'
 import axios from 'axios';
 import { Button, Text } from '@chakra-ui/react'
 import { AuthContext } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 const CreateBlog = () => {
     const modules = {
         toolbar: [
@@ -23,6 +24,7 @@ const CreateBlog = () => {
     ]
     const {currentUser}=useContext(AuthContext)
     const [input, setInput] = useState({})
+    const navigate=useNavigate()
     function handleInput(e) {
         setInput({ ...input, [e.target.name]: e.target.value });
     }
@@ -31,7 +33,7 @@ const CreateBlog = () => {
             console.log("input: ", input);
             let res = await axios.post('https://pawsitive-backend-seven.vercel.app/blog', input);
             if (res.status === 201) {
-                window.alert("blog created")
+                navigate("/Blog")
             } else {
                 window.alert("error")
                 console.log(res)
