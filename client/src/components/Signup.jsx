@@ -35,6 +35,7 @@ import { doc, setDoc } from 'firebase/firestore';
 
 const Signup = () => {
     const [show, setShow] = useState(false);
+    const [agreeTAndC, setAgreeTAndC] = useState(false);
     const handleClick = () => setShow(!show);
     const navigate = useNavigate();
     const [userCredentials, setUserCredentials] = useState({});
@@ -57,13 +58,17 @@ const Signup = () => {
         setUserCredentials({ ...userCredentials, [e.target.name]: e.target.value });
     }
     const handleSignup = async (e) => {
-        setLoading(true);
         e.preventDefault();
+        if (!agreeTAndC) {
+            setError("Please agree to the terms and conditions.");
+            return;
+        }
+        setLoading(true);
         setError("");
-        const email=userCredentials.email;
-        const password=userCredentials.password
+        const email = userCredentials.email;
+        const password = userCredentials.password
         const displayName = userCredentials.name;
-        const defaultProfile='https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/Group%2035913.png?alt=media&token=857c7bc3-4f1f-47d6-ba8b-355944132384'
+        const defaultProfile = 'https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/Group%2035913.png?alt=media&token=857c7bc3-4f1f-47d6-ba8b-355944132384'
         try {
             const res = await createUserWithEmailAndPassword(auth, email, password);
             await updateProfile(auth.currentUser, {
@@ -96,6 +101,10 @@ const Signup = () => {
             setError(err.message);
         }
     };
+    const handleCheckboxChange = (e) => {
+        setAgreeTAndC(e.target.checked);
+    };
+
     return (
         <div style={{ width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Container maxW="7xl" p={{ base: 5, md: 10 }}>
@@ -146,7 +155,9 @@ const Signup = () => {
                             </VStack>
                             <VStack w="100%">
                                 <Stack direction="row" justifyContent="space-between" w="100%">
-                                    <Link textDecoration={'underline'}>Forgot password</Link>
+                                    <Checkbox value={agreeTAndC} colorScheme="green" size="md" onChange={handleCheckboxChange}>
+                                        I agree to T&C
+                                    </Checkbox>
                                     <Link href='/login' textDecoration={'underline'}>Login??</Link>
                                 </Stack>
                                 <Button
