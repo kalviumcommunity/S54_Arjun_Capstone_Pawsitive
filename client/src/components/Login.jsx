@@ -36,6 +36,7 @@ const Login = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const {setCurrentUser,setSignin}=useContext(AuthContext)
+
     onAuthStateChanged(auth, (user) => {
         if (user) {
             console.log(user)
@@ -61,7 +62,6 @@ const Login = () => {
             .catch((error) => {
                 setError(error.message);
             });
-        navigate("/");
     }
 
     const googleSignIn = () => {
@@ -128,10 +128,8 @@ const Login = () => {
                             </VStack>
                             <VStack w="100%">
                                 <Stack direction="row" justifyContent="space-between" w="100%">
-                                    <Checkbox colorScheme="green" size="md">
-                                        I agree to T&C
-                                    </Checkbox>
                                     <Link onClick={handlePasswordReset} fontSize={{ base: 'md', sm: 'md' }}>Forgot password?</Link>
+                                    <Link onClick={()=>navigate("/signup")} fontSize={{ base: 'md', sm: 'md' }}>Register</Link>
                                 </Stack>
                                 <Button
                                     onClick={(e) => { handleLogin(e) }}

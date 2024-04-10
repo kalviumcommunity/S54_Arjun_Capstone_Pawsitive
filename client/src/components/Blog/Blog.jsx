@@ -40,6 +40,7 @@ const Blog = () => {
       console.error("Error fetching user:", err);
     }
   }
+
   const removeHtmlTags = (html) => {
     const doc = new DOMParser().parseFromString(html, 'text/html');
     return doc.body.textContent || "";
@@ -73,7 +74,7 @@ const Blog = () => {
   return (
     <>
       <Navbar />
-      <div style={{ padding: "3vw 8vw",display: 'flex', flexDirection: 'column', justifyContent: "space-between", gap: '2vw' }}>
+      <div style={{width:"100vw", padding: "3vw 5vw",display: 'flex', flexDirection: 'column', justifyContent: "space-between", gap: '2vw' }}>
         {
           blogs.map((blog) => (
             <Card
@@ -86,7 +87,7 @@ const Blog = () => {
                 <>
                   <Image
                     objectFit='cover'
-                    maxW={{ base: '100%', sm: '250px' }}
+                    maxW={{ base: '100vw', sm: '250px' }}
                     src={blog.img}
                     alt=' img'
                   />
@@ -104,8 +105,8 @@ const Blog = () => {
                           {bloggers[blog.createdBy].displayName}
                         </Text>
                       </div>
-                      <Text ml={"2vw"} >
-                        Created on:- {new Date(blog.dateCreated).toDateString()}
+                      <Text >
+                        {new Date(blog.dateCreated).toDateString()}
                       </Text>
                     </CardFooter>
                   </Stack>

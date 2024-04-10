@@ -41,12 +41,12 @@
   }
 }
 #blogger-pic{
-  width: 2.5vw;
+  width: 2.5vw !important;
   @include mobile {
-    width: 6vw;
+    width: 6vw !important;
   }
   @include tablet {
-    width: 6vw;
+    width: 6vw !important;
   }
 }
 #create-blog{
