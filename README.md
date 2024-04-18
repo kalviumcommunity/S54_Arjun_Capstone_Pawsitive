@@ -3,7 +3,7 @@
 Welcome to Pawsitive, a community-driven platform dedicated to animal welfare and advocacy. Pawsitive aims to bring together animal lovers from around the world to share their stories, insights, and experiences, while also providing practical tools for supporting and improving the lives of animals in need.
 
 ## Deployed frontend link
-  pawsitive-roan.vercel.app 
+https://pawsitive-roan.vercel.app/
 
 ## Features
 
