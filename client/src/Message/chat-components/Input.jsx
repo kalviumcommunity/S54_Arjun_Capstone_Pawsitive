@@ -21,14 +21,20 @@ const Input = () => {
 
   const { currentUser } = useContext(AuthContext);
   const { data } = useContext(ChatContext);
-  const emptysend=()=>{
+  const emptysend = () => {
     alert('The message is empty')
   }
-  useEffect(()=>{
-    if(img){
+  useEffect(() => {
+    if (img) {
       console.log('image uploaded')
     }
-  },[img])
+  }, [img])
+  const handleKey = (e) => {
+    if(e.code=="Enter"){
+      handleSend()
+      setText("");
+    }
+  };
   const handleSend = async () => {
     if (img) {
       const storageRef = ref(storage, uuid());
@@ -53,6 +59,8 @@ const Input = () => {
           });
         }
       );
+      setText("")
+      setImg(null)
     } else {
       await updateDoc(doc(db, "chats", data.chatId), {
         messages: arrayUnion({
@@ -88,7 +96,7 @@ const Input = () => {
         placeholder="Type Your message..."
         onChange={(e) => setText(e.target.value)}
         value={text}
-        onKeyDown={(e)=>{}}
+        onKeyDown={(e) => handleKey(e)}
       />
       <div className="send">
         {/* <img src={Img} alt="" /> */}
@@ -99,9 +107,9 @@ const Input = () => {
           onChange={(e) => setImg(e.target.files[0])}
         />
         <label htmlFor="file">
-          <img src={img?ImgDone:Img} alt="" />
+          <img src={img ? ImgDone : Img} alt="" />
         </label>
-        <button onClick={text || img ? handleSend:emptysend}>
+        <button onClick={text || img ? handleSend : emptysend}>
           <img src={send} alt="" />
         </button>
       </div>
