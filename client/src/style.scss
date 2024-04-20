@@ -49,6 +49,28 @@
     width: 8vw !important;
   }
 }
+#blog-container{
+  // width: 80vw !important;
+  padding: "3vw 33vw 2vw 2vw";
+  flex-direction: row;
+  @include mobile {
+    // width: 100vw !important;
+    flex-direction:  column;
+  }
+  @include tablet {
+    // width: 100vw !important;
+    flex-direction:  column;
+  }
+}
+#container-of-blogs{
+  flex-direction: row;
+  @include mobile {
+    flex-direction:  column-reverse;
+  }
+  @include tablet {
+    flex-direction:  column-reverse;
+  }
+}
 #create-blog{
   width: 50vw;
   @include mobile {
