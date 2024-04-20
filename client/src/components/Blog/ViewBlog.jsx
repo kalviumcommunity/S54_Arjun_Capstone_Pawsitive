@@ -144,8 +144,8 @@ const ViewBlog = () => {
                 <Box display='flex' flexDirection='column' padding={{ base: "5vw", md: "2vw 12vw" }} gap='2vw' width='100vw'>
                     <Box display="flex" flexDirection={{ base: "column", md: "row" }} justifyContent="space-between" marginBottom='2vw' gap="3vw">
                         <Image src={blog.img} display={{ base: "block", md: "none" }} alt="" borderRadius={"10px"} width={{ base: "90vw", md: "30vw" }} alignSelf='flex-start' />
-                        <Center  flexDirection='column' justifyContent='center' alignItems='flex-start' minW={"25vw"} minH={"20vw"} gap={'2vw'}>
-                            <Text fontSize={{base:"4xl",md:"5xl"}} fontWeight={'700'} marginBottom='1vw'>{blog.title}</Text>
+                        <Center  flexDirection='column' justifyContent='center' alignItems='flex-start' minW={"25vw"} minH={"20vw"} gap={'2vw'} p={'1vw'}>
+                            <Text fontSize={{base:"4xl",md:"5xl"}} fontWeight={'600'} marginBottom='1vw'>{blog.title}</Text>
                             <div style={{ display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center" }}>
                                 <Text color={"red"}>{blog.category}</Text>
                                 <Button leftIcon={<ThumbUpOutlinedIcon />} onClick={() => handleLikeBlog()} cursor="pointer" border="none" color={isLiked ? "blue" : "black"} backgroundColor="white" outline={"none"} _active={{border:"none"}} _hover={{border:"none",outline:"none"}}>

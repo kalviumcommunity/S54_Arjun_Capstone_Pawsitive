@@ -21,11 +21,12 @@ const Search = () => {
   const { currentUser } = useContext(AuthContext);
 
   const handleSearch = async () => {
-    const trimmedUsername = username.trim().toLowerCase();
-    const usernameParts = trimmedUsername.split(' ').map(part => part.charAt(0).toUpperCase() + part.slice(1));
+    // const trimmedUsername = username.trim().toLowerCase();
+    // const usernameParts = trimmedUsername.split(' ').map(part => part.charAt(0).toUpperCase() + part.slice(1));
+    
     const q = query(
       collection(db, "users"),
-      where("displayName", "in", usernameParts)
+      where("displayName", "==", username)
     );
 
     try {
@@ -47,6 +48,7 @@ const Search = () => {
   };
 
   const handleKey = (e) => {
+    setErr(false)
     e.code === "Enter" && handleSearch();
   };
 
@@ -86,7 +88,6 @@ const Search = () => {
       console.log("err: ", err);
       setErr(true)
     }
-
     setUser(null);
     setUsername("")
   };

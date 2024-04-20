@@ -31,7 +31,7 @@ import {
     updateProfile
 } from "firebase/auth";
 import { AuthContext } from '../context/AuthContext.jsx';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const Signup = () => {
     const [show, setShow] = useState(false);
@@ -43,16 +43,16 @@ const Signup = () => {
     const [loading, setLoading] = useState(false);
     const { signin, setSignin, setCurrentUser } = useContext(AuthContext);
 
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            console.log(user)
-            setCurrentUser(user)
-            setSignin(true)
-            navigate("/");
-        } else {
-            console.log('err')
-        }
-    })
+    // onAuthStateChanged(auth, (user) => {
+    //     if (user) {
+    //         console.log(user)
+    //         setCurrentUser(user)
+    //         setSignin(true)
+    //         navigate("/");
+    //     } else {
+    //         console.log('err')
+    //     }
+    // })
 
     function handleCredentials(e) {
         setUserCredentials({ ...userCredentials, [e.target.name]: e.target.value });
@@ -89,18 +89,38 @@ const Signup = () => {
             setLoading(false);
         }
     };
-    const googleSignIn = () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider)
-    };
     const handleGoogleSignIn = async () => {
         try {
-            googleSignIn();
+            const provider = new GoogleAuthProvider();
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+    
+            // Check if the user already exists in Firestore
+            const userRef = doc(db, "users", user.uid);
+            const userSnapshot = await getDoc(userRef);
+    
+            // If the user does not exist, create a new user document
+            if (!userSnapshot.exists()) {
+                const defaultProfile = 'https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/Group%2035913.png?alt=media&token=857c7bc3-4f1f-47d6-ba8b-355944132384';
+                await setDoc(userRef, {
+                    uid: user.uid,
+                    displayName: user.displayName,
+                    email: user.email,
+                    photoURL: user.photoURL || defaultProfile,
+                });
+                await setDoc(doc(db, "userChats", user.uid), {});
+            }
+    
+            // Set current user and navigate
+            setCurrentUser(user);
+            setSignin(true);
+            navigate("/");
         } catch (error) {
-            console.log(error);
-            setError(err.message);
+            console.error("Error signing in with Google:", error);
+            setError(error.message);
         }
     };
+    
     const handleCheckboxChange = (e) => {
         setAgreeTAndC(e.target.checked);
     };
