@@ -16,30 +16,49 @@ const petSchema = new mongoose.Schema({
     },
     gender: {
         type: String,
-        enum: ['m', 'f', 'unknown'],
+        enum: ['Male', 'Female'],
         required: true
     },
-    size: {
-        type: String,
-        enum: ['small', 'medium', 'large']
+    ageUnit:{
+        type :String ,
+        enum:[ "years", "months","weeks"],
+        required:"true"
     },
-    color: String,
+    // size: {
+    //     type: String,
+    //     enum: ['small', 'medium', 'large']
+    // },
+    // color: String,
     weight: Number,
-    spayedNeutered: {
-        type: Boolean,
-        default: false
-    },
-    vaccinationStatus: String,
-    healthStatus: String,
-    temperament: String,
-    history: String,
+    // spayedNeutered: {
+    //     type: Boolean,
+    //     default: false
+    // },
+    // vaccinationStatus: String,
+    // healthStatus: String,
+    // temperament: String,
+    // history: String,
     photos: [String],
     location: {
         type: String,
         required: true
     },
+    additionalInfo: {
+        type: String
+    },
+    contact:{
+        type: String,
+        required: true
+    },
     adoptionFee: Number,
-    additionalInfo: String
+    createdBy:{
+        type:String,
+        required:true
+    },
+    dateCreated: {
+        type: Date,
+        default: Date.now(),
+    },
 });
 
 const Pet = mongoose.model('Pet', petSchema);

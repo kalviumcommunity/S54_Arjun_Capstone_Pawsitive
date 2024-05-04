@@ -7,8 +7,9 @@ export const AuthContext = createContext();
 const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState({});
   const [signin, setSignin] = useState(false);
-  const [community,setCommunity]=useState('explore')
+  const [community,setCommunity]=useState('message')
   const [mob,setMob]=useState(false)
+  
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);

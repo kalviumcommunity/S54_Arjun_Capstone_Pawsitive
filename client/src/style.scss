@@ -49,6 +49,22 @@
     width: 8vw !important;
   }
 }
+#loader-img{
+  width: 25vw;
+  position: absolute;
+  top: 17vw;
+  left: 40vw;
+  @include mobile {
+    width: 50vw;
+    top: 35vw;
+    left: 30vw;
+  }
+  @include tablet {
+    width: 50vw;
+    top: 35vw;
+    left: 30vw;
+  }
+}
 #blog-container{
   // width: 80vw !important;
   padding: "3vw 33vw 2vw 2vw";

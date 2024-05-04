@@ -80,6 +80,7 @@ const Signup = () => {
                 displayName,
                 email,
                 photoURL: defaultProfile,
+                favPets:[]
             });
             await setDoc(doc(db, "userChats", res.user.uid), {});
             navigate("/");
@@ -107,6 +108,7 @@ const Signup = () => {
                     displayName: user.displayName,
                     email: user.email,
                     photoURL: user.photoURL || defaultProfile,
+                    favPets:[]
                 });
                 await setDoc(doc(db, "userChats", user.uid), {});
             }
