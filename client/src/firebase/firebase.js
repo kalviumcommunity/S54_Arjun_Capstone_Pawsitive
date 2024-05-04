@@ -4,17 +4,19 @@ import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBLd-6AOqArW29JqFTF9J89Td_KjB1Tju4",
-  authDomain: "pawsitive-64728.firebaseapp.com",
+  apiKey: import.meta.env.VITE_apiKey || "AIzaSyBLd-6AOqArW29JqFTF9J89Td_KjB1Tju4",
+  authDomain: import.meta.env.VITE_authDomain,
   projectId: "pawsitive-64728",
-  storageBucket: "pawsitive-64728.appspot.com",
-  messagingSenderId: "600850619067",
-  appId: "1:600850619067:web:47824d8be2033f2cb2679e",
-  measurementId: "G-ZQ4TJX3XM5"
+  storageBucket: import.meta.env.VITE_storageBucket,
+  messagingSenderId: import.meta.env.VITE_messagingSenderId,
+  appId: import.meta.env.VITE_appId,
+  measurementId: import.meta.env.VITE_measurementId
 };
 
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const storage = getStorage();
 export const db = getFirestore();
+
