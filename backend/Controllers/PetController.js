@@ -34,18 +34,21 @@ const postPet = async (req, res) => {
             breed,
             age,
             gender,
-            size,
-            color,
+            // size,
+            // color,
             weight,
-            spayedNeutered,
-            vaccinationStatus,
-            healthStatus,
-            temperament,
-            history,
+            // spayedNeutered,
+            // vaccinationStatus,
+            // healthStatus,
+            // temperament,
+            // history,
+            contact,
+            ageUnit,
             photos,
             location,
             adoptionFee,
-            additionalInfo
+            additionalInfo,
+            createdBy
         } = req.body;
 
         const newPet = new Pets({
@@ -54,25 +57,28 @@ const postPet = async (req, res) => {
             breed,
             age,
             gender,
-            size,
-            color,
+            // size,
+            // color,
             weight,
-            spayedNeutered,
-            vaccinationStatus,
-            healthStatus,
-            temperament,
-            history,
+            // spayedNeutered,
+            // vaccinationStatus,
+            // healthStatus,
+            // temperament,
+            // history,
+            contact,
+            ageUnit,
             photos,
             location,
             adoptionFee,
-            additionalInfo
+            additionalInfo,
+            createdBy
         });
 
         const savedPet = await newPet.save();
         res.status(201).json({ message: "Pet Created Successfully", pet: savedPet });
     } catch (error) {
         console.error("Error creating Pet:", error);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).json({ message:error.message });
     }
 };
 
