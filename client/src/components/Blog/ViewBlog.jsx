@@ -8,6 +8,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { AuthContext } from '../../context/AuthContext';
 import { ThumbUpOutlined as ThumbUpOutlinedIcon, DeleteOutline as DeleteOutlineIcon } from '@mui/icons-material';
+import Loader from '../../assets/loader-img.gif';
 
 const ViewBlog = () => {
     const { currentUser } = useContext(AuthContext);
@@ -140,15 +141,15 @@ const ViewBlog = () => {
     return (
         <>
             <Navbar />
-            {blog &&
+            {blog ? 
                 <Box display='flex' flexDirection='column' padding={{ base: "5vw", md: "2vw 12vw" }} gap='2vw' width='100vw'>
                     <Box display="flex" flexDirection={{ base: "column", md: "row" }} justifyContent="space-between" marginBottom='2vw' gap="3vw">
                         <Image src={blog.img} display={{ base: "block", md: "none" }} alt="" borderRadius={"10px"} width={{ base: "90vw", md: "30vw" }} alignSelf='flex-start' />
-                        <Center  flexDirection='column' justifyContent='center' alignItems='flex-start' minW={"25vw"} minH={"20vw"} gap={'2vw'} p={'1vw'}>
-                            <Text fontSize={{base:"4xl",md:"5xl"}} fontWeight={'600'} marginBottom='1vw'>{blog.title}</Text>
+                        <Center flexDirection='column' justifyContent='center' alignItems='flex-start' minW={"25vw"} minH={"20vw"} gap={'2vw'} p={'1vw'}>
+                            <Text fontSize={{ base: "4xl", md: "5xl" }} fontWeight={'600'} marginBottom='1vw'>{blog.title}</Text>
                             <div style={{ display: "flex", width: "100%", justifyContent: "space-between", alignItems: "center" }}>
                                 <Text color={"red"}>{blog.category}</Text>
-                                <Button leftIcon={<ThumbUpOutlinedIcon />} onClick={() => handleLikeBlog()} cursor="pointer" border="none" color={isLiked ? "blue" : "black"} backgroundColor="white" outline={"none"} _active={{border:"none"}} _hover={{border:"none",outline:"none"}}>
+                                <Button leftIcon={<ThumbUpOutlinedIcon />} onClick={() => handleLikeBlog()} cursor="pointer" border="none" color={isLiked ? "blue" : "black"} backgroundColor="white" outline={"none"} _active={{ border: "none" }} _hover={{ border: "none", outline: "none" }}>
                                     <Text as='b'>{likesCount}</Text>
                                 </Button>
                             </div>
@@ -171,7 +172,7 @@ const ViewBlog = () => {
                         <Image src={blog.img} display={{ base: "none", md: "block" }} alt="" borderRadius={"10px"} minW={{ base: "90vw", md: "30vw" }} alignSelf='center' />
                     </Box>
 
-                    <Box mt={{base:"6vw",md:"0"}} fontSize={{ base: "1xl", md: "2xl" }} maxWidth='100%' overflowWrap='break-word' dangerouslySetInnerHTML={sanitizeHtml(blog.content)} />
+                    <Box mt={{ base: "6vw", md: "0" }} fontSize={{ base: "1xl", md: "2xl" }} maxWidth='100%' overflowWrap='break-word' dangerouslySetInnerHTML={sanitizeHtml(blog.content)} />
 
                     <Box padding={{ md: "0 5vw", base: "0" }} >
                         <Heading as="h2" size="lg" mt="4">Comments</Heading>
@@ -194,7 +195,7 @@ const ViewBlog = () => {
                             ))
                         }
                     </Box>
-                </Box>
+                </Box> : <img id='loader-img' src={Loader}/> 
             }
         </>
     )
