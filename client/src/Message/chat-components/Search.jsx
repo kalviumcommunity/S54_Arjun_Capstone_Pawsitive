@@ -23,7 +23,7 @@ const Search = () => {
   const handleSearch = async () => {
     // const trimmedUsername = username.trim().toLowerCase();
     // const usernameParts = trimmedUsername.split(' ').map(part => part.charAt(0).toUpperCase() + part.slice(1));
-    
+
     const q = query(
       collection(db, "users"),
       where("displayName", "==", username)
@@ -31,12 +31,12 @@ const Search = () => {
 
     try {
       const querySnapshot = await getDocs(q);
-      if(!querySnapshot.empty){
+      if (!querySnapshot.empty) {
         querySnapshot.forEach((doc) => {
           setUser(doc.data());
           setErr(false)
         });
-      }else{
+      } else {
         setErr(true)
         setUser(null)
       }
@@ -84,7 +84,7 @@ const Search = () => {
           [combinedId + ".date"]: serverTimestamp(),
         });
       }
-    } catch (err) { 
+    } catch (err) {
       console.log("err: ", err);
       setErr(true)
     }
@@ -93,8 +93,8 @@ const Search = () => {
   };
   return (
     <div className="search">
-      <div className="searchForm" style={{display:'flex',alignItems:'center',gap:'8px'}}>
-        <svg onClick={()=>handleSearch()} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-search" viewBox="0 0 16 16">
+      <div className="searchForm" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <svg onClick={() => handleSearch()} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-search" viewBox="0 0 16 16">
           <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
         </svg>
         <input
@@ -105,7 +105,7 @@ const Search = () => {
           value={username}
         />
       </div>
-      {err && <div style={{textAlign:"center"}}><span>User not found!</span></div>}
+      {err && <div style={{ textAlign: "center" }}><span>User not found!</span></div>}
       {user && (
         <div className="userChat" onClick={handleSelect}>
           <img src={user.photoURL} alt="" />
