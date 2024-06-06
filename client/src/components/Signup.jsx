@@ -15,7 +15,9 @@ import {
     InputRightElement,
     Checkbox,
     Link,
-    Text
+    Text,
+    position,
+    useToast
 } from '@chakra-ui/react';
 import { auth, db } from '../firebase/firebase.js';
 import { GoogleButton } from 'react-google-button';
@@ -32,8 +34,10 @@ import {
 } from "firebase/auth";
 import { AuthContext } from '../context/AuthContext.jsx';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
 const Signup = () => {
+    const toast = useToast()
     const [show, setShow] = useState(false);
     const [agreeTAndC, setAgreeTAndC] = useState(false);
     const handleClick = () => setShow(!show);
@@ -42,6 +46,17 @@ const Signup = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const { signin, setSignin, setCurrentUser } = useContext(AuthContext);
+    const accountcreated = () => {
+        toast({
+            title: 'Account created.',
+            position: 'bottom',
+            description: "We've created your account for you.",
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+        })
+    }
+
 
     // onAuthStateChanged(auth, (user) => {
     //     if (user) {
@@ -80,9 +95,12 @@ const Signup = () => {
                 displayName,
                 email,
                 photoURL: defaultProfile,
-                favPets:[]
+                favPets: []
             });
             await setDoc(doc(db, "userChats", res.user.uid), {});
+            localStorage.setItem('photoURL', defaultProfile)
+            localStorage.setItem('signin', true)
+            accountcreated()
             navigate("/");
         } catch (err) {
             console.log("err: ", err);
@@ -95,11 +113,11 @@ const Signup = () => {
             const provider = new GoogleAuthProvider();
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
-    
+
             // Check if the user already exists in Firestore
             const userRef = doc(db, "users", user.uid);
             const userSnapshot = await getDoc(userRef);
-    
+
             // If the user does not exist, create a new user document
             if (!userSnapshot.exists()) {
                 const defaultProfile = 'https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/Group%2035913.png?alt=media&token=857c7bc3-4f1f-47d6-ba8b-355944132384';
@@ -108,21 +126,23 @@ const Signup = () => {
                     displayName: user.displayName,
                     email: user.email,
                     photoURL: user.photoURL || defaultProfile,
-                    favPets:[]
+                    favPets: []
                 });
                 await setDoc(doc(db, "userChats", user.uid), {});
             }
-    
+
             // Set current user and navigate
             setCurrentUser(user);
             setSignin(true);
+            localStorage.setItem('photoURL', user.photoURL)
+            localStorage.setItem('signin', true)
             navigate("/");
         } catch (error) {
             console.error("Error signing in with Google:", error);
             setError(error.message);
         }
     };
-    
+
     const handleCheckboxChange = (e) => {
         setAgreeTAndC(e.target.checked);
     };
@@ -133,7 +153,7 @@ const Signup = () => {
                 <Center>
                     <Stack spacing={4}>
                         <Stack align="center">
-                            <Heading fontSize="2xl">Create your account</Heading>
+                            <Heading fontSize="3xl">Create Your Account</Heading>
                         </Stack>
                         <VStack
                             as="form"
@@ -152,24 +172,24 @@ const Signup = () => {
                                 </FormControl>
                                 <FormControl id="email">
                                     <FormLabel>Email</FormLabel>
-                                    <Input onChange={(e) => { handleCredentials(e) }} rounded="md" type="email" name='email' required />
+                                    <Input onChange={(e) => { handleCredentials(e) }} rounded="md" type="email" name='email' required inputMode='email'/>
                                 </FormControl>
                                 <FormControl id="password">
                                     <FormLabel>Password</FormLabel>
                                     <InputGroup size="md">
-                                        <Input onChange={(e) => { handleCredentials(e) }} name='password' rounded="md" type={show ? 'text' : 'password'} required />
+                                        <Input onChange={(e) => { handleCredentials(e) }} name='password' rounded="md" type={show ? 'text' : 'password'} required inputMode='password'/>
                                         <InputRightElement width="4.5rem">
                                             <Button
                                                 h="1.75rem"
                                                 size="sm"
                                                 rounded="md"
-                                                bg={useColorModeValue('gray.300', 'gray.700')}
-                                                _hover={{
-                                                    bg: useColorModeValue('gray.400', 'gray.800')
-                                                }}
+                                                // bg={useColorModeValue('gray.300', 'gray.700')}
+                                                // _hover={{
+                                                //     bg: useColorModeValue('gray.400', 'gray.800')
+                                                // }}
                                                 onClick={handleClick}
                                             >
-                                                {show ? 'Hide' : 'Show'}
+                                                {show ? <ViewOffIcon /> : <ViewIcon />}
                                             </Button>
                                         </InputRightElement>
                                     </InputGroup>
