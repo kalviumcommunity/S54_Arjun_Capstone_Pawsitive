@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Box, Flex, Image, Text, Button, VStack, Icon } from '@chakra-ui/react';
+import { Box, Flex, Image, Text, Button, VStack, Icon, useToast } from '@chakra-ui/react';
 import { FaMapMarkerAlt, FaHeart, FaRegHeart } from 'react-icons/fa';
 import { IoMdMale, IoMdFemale } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
-import { db } from '../firebase/firebase';
-import { AuthContext } from '../context/AuthContext';
+import { db } from '../../firebase/firebase';
+import { AuthContext } from '../../context/AuthContext';
 
 const AdoptCard = ({ pet }) => {
     const navigate = useNavigate();
+    const toast=useToast();
     const [owner, setOwner] = useState(null);
     const [liked, setLiked] = useState(false);
     const {currentUser}=useContext(AuthContext)
@@ -27,7 +28,7 @@ const AdoptCard = ({ pet }) => {
                 console.error('Error fetching user:', err);
             }
         };
-    
+        
         const checkLiked = async () => {
             try {
                 const userRef = doc(db, 'users', currentUser.uid);
@@ -45,7 +46,15 @@ const AdoptCard = ({ pet }) => {
         getOwnerData();
         checkLiked();
     }, [pet.createdBy, currentUser.uid, pet._id]);
-    
+    const favpetadded = () => {
+        toast({
+            title: 'Added to favourites',
+            position: 'top-right',
+            // description: "Visit profile page for your favourite pets",
+            status: 'success',
+            duration: 3000
+        })
+    }
 
     const handleProfileClick = (userId) => {
         navigate(`/Profile/${userId}`);
@@ -67,6 +76,7 @@ const AdoptCard = ({ pet }) => {
                 await updateDoc(userRef, {
                     favPets: arrayUnion(pet._id),
                 });
+                favpetadded()
             }
         } catch (err) {
             console.error('Error updating favorites:', err);
@@ -77,7 +87,8 @@ const AdoptCard = ({ pet }) => {
         <Box
             display="flex"
             flexDirection="column"
-            maxW={{ base: '85vw', md: '20vw' }}
+            maxW={{ base: '83vw', md: '20vw' }}
+            // maxH={{base:'60vh'}}
             borderWidth="1px"
             borderRadius="30px"
             justifyContent="space-between"
@@ -87,7 +98,8 @@ const AdoptCard = ({ pet }) => {
             bg="white"
             p={4}
             m={4}
-            ml={{ base: '7vw', md: '0' }}
+            ml={{ base: '8vw', md: '0' }}
+            className='dog-imagee'
         >
             <Image onClick={() => handlePetClick(pet._id)} cursor="pointer" borderRadius="10%" src={pet.photos[0]} alt={pet.name} minH="35vh" maxH="35vh" objectFit="cover" maxW="100%" />
 
@@ -109,7 +121,7 @@ const AdoptCard = ({ pet }) => {
                         {/* <Text ml={2} textAlign="left" color="grey" w={"5vw"} textOverflow={"ellipsis"}>
                             {pet.location}
                         </Text> */}
-                        <h2 style={{marginLeft:"0.5vw",width:"6vw",color:"grey",textOverflow:"ellipsis",overflow:"hidden",whiteSpace:"nowrap"}}>
+                        <h2 id='location' >
                             {pet.location}
                         </h2>
                     </Flex>

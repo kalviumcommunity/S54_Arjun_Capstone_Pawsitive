@@ -2,17 +2,19 @@ import { doc, getDoc } from 'firebase/firestore';
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { db } from '../firebase/firebase';
-import { Box, Button, HStack, Image, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, HStack, Icon, Image, Text, VStack } from '@chakra-ui/react';
 import Navbar from './Navbar';
 import Message from '../assets/message.png'
 import edit from '../assets/edit.png'
 import { AuthContext } from '../context/AuthContext';
+import { FiMessageSquare } from "react-icons/fi";
+import { FaEdit } from "react-icons/fa";
 
 const Profile = () => {
   const { uid } = useParams();
-  const {currentUser}=useContext(AuthContext)
+  const { currentUser } = useContext(AuthContext)
   const [user, setUser] = useState({});
-  const [own,setOwn]=useState(false)
+  const [own, setOwn] = useState(false)
   const getUser = async () => {
     try {
       const docRef = doc(db, "users", uid);
@@ -21,7 +23,7 @@ const Profile = () => {
         const userData = docSnap.data();
         setUser(userData);
         console.log(currentUser)
-        if(user.uid==currentUser.uid){
+        if (user.uid == currentUser.uid) {
           setOwn(true)
         }
         console.log("User data:", userData);
@@ -45,7 +47,7 @@ const Profile = () => {
           {/* <button><img id='msg-pic' src={Message} alt="" /></button> */}
           <HStack ml={'1vw'}>
             <Text fontWeight={'600'} fontSize={'3xl'}>{user.displayName} </Text>
-            <img  src={own?edit:Message} alt="" style={{width:own?'2vw':'1vw',cursor:'pointer'}}/>
+            <Icon as={own ? FaEdit : FiMessageSquare} w={8} h={8} />
           </HStack>
           <Text>{user.bio}</Text>
         </VStack>
