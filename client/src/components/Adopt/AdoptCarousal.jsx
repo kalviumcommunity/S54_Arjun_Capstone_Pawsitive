@@ -6,9 +6,9 @@ import {
     Image,
     Center,
 } from '@chakra-ui/react';
-import pic1 from '../assets/adoptPics/pic1.svg'
-import pic2 from '../assets/adoptPics/pic2.svg'
-import adoptimg from '../assets/adoptImg 1.svg'
+import pic1 from '../../assets/adoptPics/pic1.svg'
+import pic2 from '../../assets/adoptPics/pic2.svg'
+import adoptimg from '../../assets/adoptImg 1.svg'
 
 const cards = [
     {
