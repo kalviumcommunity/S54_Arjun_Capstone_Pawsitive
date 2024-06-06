@@ -61,7 +61,7 @@ const CreateBlog = () => {
                     <ReactQuill className='quill' style={{borderRadius: '10px', height:'20vh'}} name='content' onChange={newValue => setInput({...input,'content':newValue})} theme='snow' modules={modules} formats={formats} />
                 </form>
 
-                <Button type='submit' onClick={()=>createNewBlog()} mt={20}>
+                <Button colorScheme='blue' type='submit' onClick={()=>createNewBlog()} mt={20}>
                     Create blog
                 </Button>
             </div>

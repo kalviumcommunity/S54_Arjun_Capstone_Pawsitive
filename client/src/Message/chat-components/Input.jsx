@@ -36,6 +36,10 @@ const Input = () => {
     }
   };
   const handleSend = async () => {
+    if(!img && !text){
+      emptysend()
+      return
+    }
     if (img) {
       const storageRef = ref(storage, uuid());
 

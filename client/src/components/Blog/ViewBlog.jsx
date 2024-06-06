@@ -82,12 +82,11 @@ const ViewBlog = () => {
     const handleCommentSubmit = async () => {
         try {
             await axios.post(`https://pawsitive-backend-seven.vercel.app/blog/${blogId}/comments`, {
-                commenterId: blog?.createdBy,
+                commenterId: currentUser.uid,
                 content: newComment
             });
             setNewComment('');
             getComments();
-            window.alert("comment posted")
         } catch (err) {
             console.error('Error submitting comment:', err);
         }
@@ -141,7 +140,7 @@ const ViewBlog = () => {
     return (
         <>
             <Navbar />
-            {blog ? 
+            {blog ?
                 <Box display='flex' flexDirection='column' padding={{ base: "5vw", md: "2vw 12vw" }} gap='2vw' width='100vw'>
                     <Box display="flex" flexDirection={{ base: "column", md: "row" }} justifyContent="space-between" marginBottom='2vw' gap="3vw">
                         <Image src={blog.img} display={{ base: "block", md: "none" }} alt="" borderRadius={"10px"} width={{ base: "90vw", md: "30vw" }} alignSelf='flex-start' />
@@ -172,7 +171,7 @@ const ViewBlog = () => {
                         <Image src={blog.img} display={{ base: "none", md: "block" }} alt="" borderRadius={"10px"} minW={{ base: "90vw", md: "30vw" }} alignSelf='center' />
                     </Box>
 
-                    <Box mt={{ base: "6vw", md: "0" }} fontSize={{ base: "1xl", md: "2xl" }} maxWidth='100%' overflowWrap='break-word' dangerouslySetInnerHTML={sanitizeHtml(blog.content)} />
+                    <Box mt={{ base: "6vw", md: "0" }} fontSize={{ base: "1.3rem", md: "2xl" }} maxWidth='100%' overflowWrap='break-word' dangerouslySetInnerHTML={sanitizeHtml(blog.content)} />
 
                     <Box padding={{ md: "0 5vw", base: "0" }} >
                         <Heading as="h2" size="lg" mt="4">Comments</Heading>
@@ -180,7 +179,7 @@ const ViewBlog = () => {
                             <Input value={newComment} onChange={(e) => setNewComment(e.target.value)} placeholder="Write a comment" />
                             <Button ml="2" onClick={handleCommentSubmit} colorScheme="blue">Comment</Button>
                         </Box>
-                        {comments && comments.comments &&
+                        {comments && comments.comments && comments.comments.length > 0 ? (
                             comments.comments.slice().reverse().map((comment, index) => (
                                 <Box key={index} borderBottom="1px solid #ccc" p="2" mt="2">
                                     {commenters[comment.commenterId] && (
@@ -193,9 +192,11 @@ const ViewBlog = () => {
                                     <Text ml={"50px"} fontSize={"1xl"}>{comment.content}</Text>
                                 </Box>
                             ))
-                        }
+                        ) : (
+                            <Text mt="2" ml={3} fontSize={"xl"} textAlign={"center"}>---- Be the first one to comment ----</Text>
+                        )}
                     </Box>
-                </Box> : <img id='loader-img' src={Loader}/> 
+                </Box> : <img id='loader-img' src={Loader} />
             }
         </>
     )

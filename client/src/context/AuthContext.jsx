@@ -16,7 +16,7 @@ const AuthContextProvider = ({ children }) => {
       if(user){
         setSignin(true)
       }
-      console.log('userdata:', user);
+      console.log('context userdata:', user);
     });
 
     return () => {

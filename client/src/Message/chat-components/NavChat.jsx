@@ -8,7 +8,7 @@ const NavChat= () => {
   const { currentUser } = useContext(AuthContext)
 
   return (
-    <div className='navbar' style={{display: 'flex', justifyContent: 'center', alignItems: 'center',gap:'0 6px',borderBottom:'solid 1px black' }}>
+    <div  className='navbar' style={{display: 'flex', justifyContent: 'center', alignItems: 'center',gap:'0 6px',borderBottom:'solid 1px black' }}>
       {/* <div className="user"> */}
       {/* <img src={currentUser.photoURL} alt="" /> */}
       {/* <span>{currentUser.displayName}</span> */}

@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { arrayRemove, arrayUnion, doc, getDoc, getDocs, onSnapshot, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import axios from 'axios';
 import Navbar from '../Navbar';
-import { Box, Button, Flex, Heading, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Text, HStack, Circle, AspectRatio, Icon, VStack } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Text, HStack, Circle, AspectRatio, Icon, VStack, ModalHeader, useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, useToast } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { FaHeart, FaMapMarkerAlt, FaRegHeart } from 'react-icons/fa';
 import { AuthContext } from '../../context/AuthContext';
@@ -13,6 +13,10 @@ import { FaShareFromSquare } from "react-icons/fa6";
 
 const ViewPet = () => {
   const { petId } = useParams();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isAlertOpen, onOpen: onAlertOpen, onClose: onAlertClose } = useDisclosure()
+  const cancelRef = useRef()
+  const toast = useToast()
   const [pet, setPet] = useState(null);
   const [owner, setOwner] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -42,7 +46,7 @@ const ViewPet = () => {
       if (docSnap.exists()) {
         const userData = docSnap.data();
         setOwner(userData);
-        console.log("userData: ", userData);
+        console.log("ownerData: ", userData);
         setLoading(false)
       } else {
         console.log("No such Owner found!");
@@ -83,8 +87,8 @@ const ViewPet = () => {
       currentUser.uid > owner.uid
         ? currentUser.uid + owner.uid
         : owner.uid + currentUser.uid;
-
     try {
+      setLoading(true)
       // Check if the chat already exists
       const chatSnapshot = await getDoc(doc(db, "chats", combinedId));
 
@@ -136,13 +140,50 @@ const ViewPet = () => {
         dispatch({ type: "CHANGE_USER", payload: chatInfo });
         setMob(true)
       }
-      // Navigate to the community page or wherever you need to go
+      setLoading(false)
       navigate("/community");
+
     } catch (err) {
       console.log("Error contacting owner:", err);
       setErr(true);
+      setLoading(false)
     }
   };
+  const Adoptpet = async () => {
+    try {
+      setLoading(true);
+      const timestamp = new Date().toISOString();
+
+      const notification = {
+        text: `${currentUser?.displayName} has decided to adopt ${pet?.name}`,
+        petId: petId,
+        adopter: currentUser?.uid,
+        timestamp:timestamp
+      };
+  
+      await setDoc(doc(db, "Inbox", owner.uid), {
+        notifications: arrayUnion(notification),
+      });
+  
+      await updateDoc(doc(db, 'users', currentUser?.uid), {
+        adoptedPets: arrayUnion(pet._id),
+      });
+  
+      onOpen();
+    } catch (err) {
+      console.error("Error adopting pet:", err);
+      toast({
+        title: 'Error',
+        description: "There was an error processing your adoption request. Please try again later.",
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   const handleLikeClick = async () => {
     try {
       const userRef = doc(db, 'users', currentUser.uid);
@@ -155,22 +196,32 @@ const ViewPet = () => {
         await updateDoc(userRef, {
           favPets: arrayUnion(pet._id),
         });
+        favpetadded()
       }
     } catch (err) {
       console.error('Error updating favorites:', err);
     }
   };
+  const favpetadded = () => {
+    toast({
+      title: 'Added to favourites',
+      position: 'top-right',
+      description: "Visit profile page for your favourite pets",
+      status: 'success',
+      duration: 3000
+    })
+  }
   return (
     <>
       <Navbar />
 
-      {loading ? <img id='loader-img' src='https://dogfood2mydoor.com/static/media/dog_load.3a3190f9.gif' /> : <Box mt={8} display={"flex"} flexDirection={{ base: "column", md: "row" }} justifyContent={"center"}>
+      {loading ? <img id='loader-img' src='https://dogfood2mydoor.com/static/media/dog_load.3a3190f9.gif' /> : <Box mt={8} display={"flex"} flexDirection={{ base: "column", md: "row" }} alignItems={{ base: "inherit", md: "center" }} >
 
-        <Box flex="1" mr={8} ml={8} position="relative" borderRadius={"20px"} padding={"1vw"}>
+        <Box flex="1" mr={8} ml={8} position="relative" borderRadius={"20px"} padding={"1vw"} >
           {pet && (
             <>
               <Box display={"flex"} justifyContent={"center"} mb={4}>
-                <Image onClick={() => handleOpenFullscreen(pet.photos[currentImageIndex])} cursor={"pointer"} src={pet.photos[currentImageIndex]} alt={"photo"} borderRadius="md" boxShadow="md" maxW="90%" minW={"40%"} maxH={{ base: "50vh", md: "60vh" }} />
+                <Image onClick={() => handleOpenFullscreen(pet.photos[currentImageIndex])} cursor={"pointer"} src={pet.photos[currentImageIndex]} alt={"photo"} borderRadius="md" boxShadow="md" maxW="95%" minW={"40%"} maxH={{ base: "50vh", md: "60vh" }} />
                 <Button position="absolute" left={{ base: "0", md: "1rem" }} top="50%" colorScheme="blue" onClick={handlePrevImage} width={"40px"} transform="translateY(-50%)" borderRadius={"50%"}>
                   <ChevronLeftIcon w={6} h={6} />
                 </Button>
@@ -193,13 +244,13 @@ const ViewPet = () => {
           )}
         </Box>
 
-        <Box flex="1" ml={{base:"10vw"}}>
+        <Box flex="1" mt={"2vw"} ml={{ base: "10vw" }}>
           {pet && (
-            <Box boxShadow={"lg"} border={"2px solid grey"} width={{base:"90%",md:"80%"}} mt={3} borderRadius={"lg"} padding={"2vw"} mb={8} position={"relative"}>
+            <Box boxShadow={"lg"} border={"2px solid grey"} width={{ base: "90%", md: "80%" }} mt={3} borderRadius={"lg"} padding={"2vw"} mb={8} position={"relative"}>
               <Heading as="h1" size="xl" mb={4}>{pet.name}</Heading>
               <Box colorScheme="white" mb={3} mr={3} cursor="pointer" onClick={handleLikeClick} position={"absolute"} top={"2vw"} right={"1vw"}>
                 <Icon as={liked ? FaHeart : FaRegHeart} color="red" w={8} h={8} />
-                <Icon as={FaShareFromSquare} ml={4}  w={8} h={8} />
+                <Icon as={FaShareFromSquare} ml={4} w={8} h={8} />
               </Box>
               <Text fontSize={"xl"} mb={3}>
                 {pet.species} &middot; {pet.gender} &middot; {pet.breed}
@@ -212,7 +263,7 @@ const ViewPet = () => {
               </HStack>
               {owner && <div style={{ display: "flex", gap: "1vw", alignItems: "center", marginBottom: "2vw" }}>
                 <img id='blogger-pic' onClick={() => handleProfileClick(owner.uid)} style={{ borderRadius: "50%", cursor: "pointer" }} src={owner.photoURL} alt="profile-pic" />
-                <Text fontSize={"xl"}>
+                <Text fontSize={"xl"} onClick={() => handleProfileClick(owner.uid)} cursor={"pointer"}>
                   {owner.displayName}
                 </Text>
               </div>}
@@ -228,7 +279,7 @@ const ViewPet = () => {
                 <Button borderRadius={"15px"} padding={"1.5vw"} _hover={{ bg: "#FFECB7" }} fontSize={"xl"} bg={"#FFECB7"} onClick={ContactOwner}>
                   Contact owner
                 </Button>
-                <Button borderRadius={"15px"} padding={"1.5vw"} fontSize={"xl"} _hover={{ bg: "#FFCC37" }} bg={"#FFCC37"} color={"white"}>
+                <Button onClick={onAlertOpen} borderRadius={"15px"} padding={"1.5vw"} fontSize={"xl"} _hover={{ bg: "#FFCC37" }} bg={"#FFCC37"} color={"white"}>
                   Adopt now
                 </Button>
               </VStack>
@@ -246,9 +297,67 @@ const ViewPet = () => {
             {fullscreenImage && (
               <Image src={fullscreenImage} alt="Fullscreen" maxW="90vw" maxH="85vh" borderRadius="md" />
             )}
+            {/* {Adopted && 
+              <Box>
+
+              </Box>
+              } */}
           </ModalBody>
         </ModalContent>
       </Modal>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered size={"xl"} motionPreset='slideInBottom'>
+        <ModalOverlay />
+        <ModalContent textAlign={"center"} justifyContent={"center"} alignItems={"center"}>
+          <ModalCloseButton />
+          <img
+            src="https://mobigram.s3.amazonaws.com/production/suggested_mobigram/cover_image/3588/Funny-dog-says-thank-you.gif"
+            alt="Thank you"
+            style={{ height: "50vh", alignSelf: "center" }}
+          />
+          <ModalHeader>
+            Thank you for helping us give {pet?.name} a loving home!
+            <br />
+            <Text fontSize="lg" mt={4}>
+              Your adoption request has been sent to the owner of {pet?.name}. We will notify you once the owner responds to your request.
+            </Text>
+            <Text fontSize="lg" mt={4}>
+              In the meantime, you can contact the owner directly to discuss any further details or queries regarding the adoption process.
+            </Text>
+          </ModalHeader>
+        </ModalContent>
+      </Modal>
+
+      <AlertDialog
+        isOpen={isAlertOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onAlertClose}
+        motionPreset='slideInBottom'
+        isCentered
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+              Adopt {pet?.name}
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Do you confirm to Adopt {pet?.name}
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onAlertClose}>
+                No
+              </Button>
+              <Button colorScheme='blue' onClick={() => {
+                onAlertClose();
+                Adoptpet()
+              }} ml={3}>
+                I confirm
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </>
   );
 };
