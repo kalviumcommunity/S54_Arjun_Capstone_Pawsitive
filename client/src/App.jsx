@@ -16,6 +16,7 @@ import Blog from './components/Blog/Blog';
 import CreateBlog from './components/Blog/CreateBlog';
 import PostPet from './components/Adopt/PostPet';
 import ViewPet from './components/Adopt/ViewPet';
+// import Inbox from './components/Inbox';
 // import { Global, css } from '@emotion/react'
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
         <Route path='/Profile/:uid' element={<Profile />} />
+        {/* <Route path='/inbox' element={privateRoute(<Inbox/>)}></Route> */}
 
         <Route path='/Blog' element={privateRoute(<Blog />)} />
         <Route path='/CreateBlog' element={privateRoute(<CreateBlog />)} />

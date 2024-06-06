@@ -28,6 +28,7 @@ import {
 import GoogleButton from 'react-google-button';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext.jsx';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 
 const Login = () => {
     const [show, setShow] = useState(false);
@@ -42,6 +43,8 @@ const Login = () => {
             console.log(user)
             setCurrentUser(user)
             setSignin(true)
+            localStorage.setItem('photoURL',user.photoURL)
+            localStorage.setItem('signin',true)
             navigate("/");
         } else {
             console.log('err')
@@ -103,24 +106,24 @@ const Login = () => {
                             <VStack spacing={4} w="100%">
                                 <FormControl id="email">
                                     <FormLabel>Email</FormLabel>
-                                    <Input onChange={(e) => { handleCredentials(e) }} rounded="md" type="email" name='email' />
+                                    <Input onChange={(e) => { handleCredentials(e) }} rounded="md" type="email" name='email' inputMode='email'/>
                                 </FormControl>
                                 <FormControl id="password">
                                     <FormLabel>Password</FormLabel>
                                     <InputGroup size="md">
-                                        <Input onChange={(e) => { handleCredentials(e) }} name='password' rounded="md" type={show ? 'text' : 'password'} />
+                                        <Input onChange={(e) => { handleCredentials(e) }} name='password' rounded="md" type={show ? 'text' : 'password'}/>
                                         <InputRightElement width="4.5rem">
                                             <Button
                                                 h="1.75rem"
                                                 size="sm"
                                                 rounded="md"
-                                                bg={useColorModeValue('gray.300', 'gray.700')}
-                                                _hover={{
-                                                    bg: useColorModeValue('gray.400', 'gray.800')
-                                                }}
+                                                // bg={useColorModeValue('gray.300', 'gray.700')}
+                                                // _hover={{
+                                                //     bg: useColorModeValue('gray.400', 'gray.800')
+                                                // }}
                                                 onClick={handleClick}
                                             >
-                                                {show ? 'Hide' : 'Show'}
+                                                {show ? <ViewOffIcon /> : <ViewIcon />}
                                             </Button>
                                         </InputRightElement>
                                     </InputGroup>
@@ -129,7 +132,7 @@ const Login = () => {
                             <VStack w="100%">
                                 <Stack direction="row" justifyContent="space-between" w="100%">
                                     <Link onClick={handlePasswordReset} fontSize={{ base: 'md', sm: 'md' }}>Forgot password?</Link>
-                                    <Link onClick={()=>navigate("/signup")} fontSize={{ base: 'md', sm: 'md' }}>Register</Link>
+                                    <Link onClick={()=>navigate("/signup")} fontSize={{ base: 'md', sm: 'md' }}>Signup</Link>
                                 </Stack>
                                 <Button
                                     onClick={(e) => { handleLogin(e) }}
