@@ -106,10 +106,20 @@ const editPet = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });
     }
 };
-
+const getFavoritePets = async (req, res) => {
+    const { petIds } = req.query;
+    try {
+        const pets = await Pets.find({ _id: { $in: petIds.split(',') } });
+        res.status(200).json(pets);
+    } catch (error) {
+        console.error('Error getting favorite pets:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 module.exports = {
     getAllPets,
     getPet,
     postPet,
     editPet,
+    getFavoritePets
 };

@@ -101,7 +101,7 @@ const AdoptCard = ({ pet }) => {
             ml={{ base: '8vw', md: '0' }}
             className='dog-imagee'
         >
-            <Image onClick={() => handlePetClick(pet._id)} cursor="pointer" borderRadius="10%" src={pet.photos[0]} alt={pet.name} minH="35vh" maxH="35vh" objectFit="cover" maxW="100%" />
+            <Image onClick={() => handlePetClick(pet._id)} cursor="pointer" borderRadius="20px" src={pet.photos[0]} alt={pet.name} minH="35vh" maxH="35vh" objectFit="cover" maxW="100%" />
 
             <Flex justify="space-between" mt={4} align="center" padding={2}>
                 <VStack align="flex-start">
