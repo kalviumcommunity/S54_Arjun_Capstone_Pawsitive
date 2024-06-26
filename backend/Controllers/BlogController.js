@@ -110,7 +110,16 @@ const likeBlog = async (req, res) => {
         res.status(500).json({ message: 'Internal Server Error' });mo
     }
 };
-
+const getSavedBlogs = async (req, res) => {
+    const { blogIds } = req.query;
+    try {
+        const blogs = await Blogs.find({ _id: { $in: blogIds.split(',') } });
+        res.status(200).json(blogs);
+    } catch (error) {
+        console.error('Error getting saved blogs:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 module.exports = {
     createBlog,
     getAllBlogs,
@@ -118,4 +127,5 @@ module.exports = {
     postComment,
     getComments,
     likeBlog,
+    getSavedBlogs
 };
