@@ -6,7 +6,6 @@ require("dotenv").config();
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const exp = require('constants');
-
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 
@@ -18,7 +17,7 @@ mongoose
 app.use(express.json());
 
 const BlogRoutes = require("./Routes/BlogRoutes")
-const PetRoutes = require("./Routes/PetRoutes")
+const PetRoutes = require("./Routes/PetRoutes");
 
 app.use('/blog', BlogRoutes);
 app.use('/pet',PetRoutes)
