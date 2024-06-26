@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Button, Center, Heading, Image, Input, Text } from '@chakra-ui/react';
+import { Box, Button, Center, Heading, Image, Input, Text, useToast } from '@chakra-ui/react';
 import Navbar from '../Navbar';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
@@ -21,7 +21,9 @@ const ViewBlog = () => {
     const [commenters, setCommenters] = useState({});
     const [likesCount, setLikesCount] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
-    const [loading,setLoading]=useState(false)
+    const [loading, setLoading] = useState(false)
+    const toast = useToast();
+
     const getBlogger = async (uid) => {
         try {
             const docRef = doc(db, "users", uid);
@@ -88,8 +90,17 @@ const ViewBlog = () => {
             });
             setNewComment('');
             getComments();
-        } catch (err) {
-            console.error('Error submitting comment:', err);
+        } catch (error) {
+            console.error('Error submitting comment:', error);
+            if (error.response && error.response.status === 429) {
+                toast({
+                    title: "Too Many Requests",
+                    description: "You have commented on this blog too many times. Please try again later.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            }
         }
     };
     const handleLikeBlog = async () => {
@@ -100,9 +111,27 @@ const ViewBlog = () => {
             console.log("res: ", res);
 
             setIsLiked(res.data.blog.likes.includes(currentUser.uid));
-            setLikesCount(res.data.blog.likes.length)
+            setLikesCount(res.data.blog.likes.length);
         } catch (error) {
             console.error('Error liking/unliking Blog:', error);
+
+            if (error.response && error.response.status === 429) {
+                toast({
+                    title: "Too Many Requests",
+                    description: "You have liked this blog too many times. Please try again later.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            } else {
+                toast({
+                    title: "An error occurred",
+                    description: "Unable to like the blog at this moment. Please try again later.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            }
         }
     };
     const sanitizeHtml = (html) => {
