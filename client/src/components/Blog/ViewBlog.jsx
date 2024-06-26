@@ -21,7 +21,7 @@ const ViewBlog = () => {
     const [commenters, setCommenters] = useState({});
     const [likesCount, setLikesCount] = useState(0);
     const [isLiked, setIsLiked] = useState(false);
-
+    const [loading,setLoading]=useState(false)
     const getBlogger = async (uid) => {
         try {
             const docRef = doc(db, "users", uid);
@@ -40,6 +40,7 @@ const ViewBlog = () => {
 
     const getBlog = async () => {
         try {
+            setLoading(true)
             const res = await axios.get(`https://pawsitive-backend-seven.vercel.app/blog/${blogId}`);
             setBlog(res.data);
             setLikesCount(res.data.likes.length);
@@ -93,7 +94,7 @@ const ViewBlog = () => {
     };
     const handleLikeBlog = async () => {
         try {
-            const res = await axios.post(`https://pawsitive-backend-seven.vercel.app/blog/${blogId}/like`, {
+            const res = await axios.put(`https://pawsitive-backend-seven.vercel.app/blog/${blogId}/like`, {
                 userId: currentUser.uid,
             });
             console.log("res: ", res);

@@ -4,6 +4,7 @@ import { arrayRemove, arrayUnion, doc, getDoc, getDocs, onSnapshot, serverTimest
 import { db } from '../../firebase/firebase';
 import axios from 'axios';
 import Navbar from '../Navbar';
+import { v4 as uuidv4 } from 'uuid';
 import { Box, Button, Flex, Heading, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Text, HStack, Circle, AspectRatio, Icon, VStack, ModalHeader, useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, useToast } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { FaHeart, FaMapMarkerAlt, FaRegHeart } from 'react-icons/fa';
@@ -28,6 +29,7 @@ const ViewPet = () => {
   const { currentUser, setMob } = useContext(AuthContext)
   const { dispatch } = useContext(ChatContext)
   const navigate = useNavigate()
+  const [petNotFound,setPetNotFound]=useState(false)
   const getPet = async () => {
     try {
       setLoading(true)
@@ -36,6 +38,9 @@ const ViewPet = () => {
       getOwner(res.data.createdBy);
     } catch (err) {
       console.error('Error getting Pet:', err);
+      setPetNotFound(true)
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -153,22 +158,69 @@ const ViewPet = () => {
     try {
       setLoading(true);
       const timestamp = new Date().toISOString();
+      const uniqueId = uuidv4();
 
-      const notification = {
-        text: `${currentUser?.displayName} has decided to adopt ${pet?.name}`,
+      // Notification for the pet owner
+      const ownerNotification = {
+        id: uniqueId,
+        message: `${currentUser.displayName} wants to adopt ${pet.name}.`,
+        sender: currentUser.uid,
+        read: false,
+        requestStatus: 'Pending', // Request is pending initially
         petId: petId,
-        adopter: currentUser?.uid,
-        timestamp:timestamp
+        timestamp: timestamp,
+        reader:owner.uid
       };
-  
-      await setDoc(doc(db, "Inbox", owner.uid), {
-        notifications: arrayUnion(notification),
-      });
-  
+
+      // Notification for the adopter
+      const adopterNotification = {
+        id: uniqueId,
+        message: `You have requested to adopt ${pet.name}. Waiting for owner's approval.`,
+        sender: currentUser.uid,
+        read: false,
+        requestStatus: 'Pending',
+        petId: petId,
+        timestamp: timestamp,
+        reader:owner.uid,
+      };
+
+      // Reference to the owner's inbox document
+      const ownerInboxRef = doc(db, "Inbox", owner.uid);
+      const ownerInboxDoc = await getDoc(ownerInboxRef);
+
+      if (ownerInboxDoc.exists()) {
+        // Add notification to the pet owner's existing inbox
+        await updateDoc(ownerInboxRef, {
+          notifications: arrayUnion(ownerNotification),
+        });
+      } else {
+        // Create a new inbox document for the pet owner
+        await setDoc(ownerInboxRef, {
+          notifications: [ownerNotification],
+        });
+      }
+
+      // Reference to the adopter's inbox document
+      const adopterInboxRef = doc(db, "Inbox", currentUser.uid);
+      const adopterInboxDoc = await getDoc(adopterInboxRef);
+
+      if (adopterInboxDoc.exists()) {
+        // Add notification to the adopter's existing inbox
+        await updateDoc(adopterInboxRef, {
+          notifications: arrayUnion(adopterNotification),
+        });
+      } else {
+        // Create a new inbox document for the adopter
+        await setDoc(adopterInboxRef, {
+          notifications: [adopterNotification],
+        });
+      }
+
+      // Update the adopter's adopted pets list
       await updateDoc(doc(db, 'users', currentUser?.uid), {
         adoptedPets: arrayUnion(pet._id),
       });
-  
+
       onOpen();
     } catch (err) {
       console.error("Error adopting pet:", err);
@@ -183,7 +235,7 @@ const ViewPet = () => {
       setLoading(false);
     }
   };
-  
+
   const handleLikeClick = async () => {
     try {
       const userRef = doc(db, 'users', currentUser.uid);
@@ -214,7 +266,13 @@ const ViewPet = () => {
   return (
     <>
       <Navbar />
-
+      {
+        petNotFound && (
+          <Box w={'full'} h={'80vh'} justifyContent={'center'} alignItems={'center'} display={'flex'}>
+            <img src="https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/download%20(3).jpeg?alt=media&token=2a5bbd60-2990-467b-b69a-0576df8a9e32" alt="pet-not-found" />
+          </Box>
+        )
+      }
       {loading ? <img id='loader-img' src='https://dogfood2mydoor.com/static/media/dog_load.3a3190f9.gif' /> : <Box mt={8} display={"flex"} flexDirection={{ base: "column", md: "row" }} alignItems={{ base: "inherit", md: "center" }} >
 
         <Box flex="1" mr={8} ml={8} position="relative" borderRadius={"20px"} padding={"1vw"} >
@@ -267,14 +325,6 @@ const ViewPet = () => {
                   {owner.displayName}
                 </Text>
               </div>}
-              {/* {pet.species}  {pet.breed} {pet.age} {pet.gender} */}
-              {/* <strong>Breed:</strong> {pet.breed} <br />
-              <strong>Age:</strong> {pet.age} <br />
-              <strong>Gender:</strong> {pet.gender} <br /> */}
-              {/* <Flex justifyContent="space-between" alignItems="center">
-                <Button colorScheme="blue">Contact Owner</Button>
-                <Button colorScheme="green">Adopt Now</Button>
-              </Flex> */}
               <VStack alignItems={"spread"} padding={"0 3vw"} >
                 <Button borderRadius={"15px"} padding={"1.5vw"} _hover={{ bg: "#FFECB7" }} fontSize={"xl"} bg={"#FFECB7"} onClick={ContactOwner}>
                   Contact owner

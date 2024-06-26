@@ -35,13 +35,15 @@ import {
     Spinner,
     List,
     ListItem,
+    AvatarBadge,
 } from '@chakra-ui/react';
-import { collection, doc, onSnapshot } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, collection, doc, onSnapshot, runTransaction, setDoc, updateDoc } from 'firebase/firestore';
 import logo from "../assets/Group 4.svg";
 import { AuthContext } from '../context/AuthContext';
 import { auth, db } from '../firebase/firebase';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import PropTypes from 'prop-types';
+import { ChatContext } from '../context/ChatContext';
 
 const navLinks = [
     { name: 'Adopt', path: '/Adopt' },
@@ -61,12 +63,50 @@ export default function Navbar() {
 
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(false);
+    const { dispatch } = useContext(ChatContext);
+    const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+
+    useEffect(() => {
+        if (currentUser && currentUser.uid) {
+            setLoading(true);
+            const inboxRef = doc(db, "Inbox", currentUser.uid);
+
+            const unsubscribe = onSnapshot(inboxRef, (doc) => {
+                const notificationsData = doc.data()?.notifications || [];
+                setNotifications(notificationsData);
+
+                // Check for unread notifications
+                const hasUnreadNotifications = notificationsData.some(notification => !notification.read);
+                setHasUnreadNotifications(hasUnreadNotifications);
+
+                setLoading(false);
+            });
+
+            return () => unsubscribe();
+        }
+    }, [currentUser]);
 
     useEffect(() => {
         if (isModalOpen && currentUser) {
             setLoading(true);
-            const unsubscribe = onSnapshot(doc(db, "Inbox", currentUser.uid), (doc) => {
-                setNotifications(doc.data()?.notifications || []);
+            const inboxRef = doc(db, "Inbox", currentUser.uid);
+
+            const unsubscribe = onSnapshot(inboxRef, (doc) => {
+                const notificationsData = doc.data()?.notifications || [];
+                setNotifications(notificationsData);
+
+                // Mark notifications as read
+                const unreadNotifications = notificationsData.filter(notification => !notification.read);
+                if (unreadNotifications.length > 0) {
+                    const updatedNotifications = notificationsData.map(notification => ({
+                        ...notification,
+                        read: true,
+                    }));
+
+                    updateDoc(inboxRef, { notifications: updatedNotifications })
+                        .catch((error) => console.error("Error updating notifications:", error));
+                }
+
                 setLoading(false);
             });
 
@@ -86,6 +126,115 @@ export default function Navbar() {
         }
     };
 
+    const getUser = async (uid) => {
+        try {
+            const docRef = doc(db, "users", uid);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                const userData = docSnap.data();
+                console.log("User data:", userData);
+            } else {
+                console.log("No such document!");
+            }
+        } catch (err) {
+            console.error("Error fetching user:", err);
+        }
+    };
+
+
+    const handleAcceptRequest = async (notification) => {
+        try {
+            const inboxRef = doc(db, "Inbox", currentUser.uid);
+            const adopterInboxRef = doc(db, "Inbox", notification.sender);
+
+            await runTransaction(db, async (transaction) => {
+                const adopterDoc = await transaction.get(adopterInboxRef);
+                const adopterNotifications = adopterDoc.data()?.notifications || [];
+
+                // Filter out the notification with the matching id
+                const filteredAdopterNotifications = adopterNotifications.filter(
+                    (noti) => noti.id !== notification.id
+                );
+
+                const adopterNotification = {
+                    ...notification,
+                    requestStatus: 'Accepted',
+                    read: false,
+                    message: "Your adoption request has been accepted. Contact info of the owner has been emailed to you, you can message owner for further queries.",
+                };
+
+                transaction.update(adopterInboxRef, {
+                    notifications: [...filteredAdopterNotifications, adopterNotification],
+                });
+
+                transaction.update(inboxRef, {
+                    notifications: arrayRemove(notification),
+                });
+
+                const updatedNotification = {
+                    ...notification,
+                    requestStatus: 'Accepted',
+                    read: false,
+                    message:'Thank you for accepting the adoption request.',
+                };
+                transaction.update(inboxRef, {
+                    notifications: arrayUnion(updatedNotification),
+                });
+            });
+        } catch (err) {
+            console.error("Error accepting request:", err);
+            toast({
+                title: 'Error',
+                description: "There was an error accepting the adoption request. Please try again later.",
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+            });
+        }
+    };
+
+    const handleRejectRequest = async (notification) => {
+        try {
+            const inboxRef = doc(db, "Inbox", currentUser.uid);
+            const adopterInboxRef = doc(db, "Inbox", notification.sender);
+
+            await runTransaction(db, async (transaction) => {
+                const adopterDoc = await transaction.get(adopterInboxRef);
+                const adopterNotifications = adopterDoc.data()?.notifications || [];
+
+                const filteredAdopterNotifications = adopterNotifications.filter(
+                    (noti) => noti.id !== notification.id
+                );
+
+                const adopterNotification = {
+                    ...notification,
+                    requestStatus: 'Rejected',
+                    read: false,
+                    message: "The owner has rejected your adoption request.",
+                };
+
+                transaction.update(adopterInboxRef, {
+                    notifications: [...filteredAdopterNotifications, adopterNotification],
+                });
+
+                transaction.update(inboxRef, {
+                    notifications: arrayRemove(notification),
+                });
+            });
+        } catch (err) {
+            console.error("Error rejecting request:", err);
+            toast({
+                title: 'Error',
+                description: "There was an error rejecting the adoption request. Please try again later.",
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+            });
+        }
+    };
+    const ContactPerson = (uid) => {
+        navigate(`/Profile/${uid}`);
+    }
     return (
         <Box p={4} bg={useColorModeValue('white', 'gray.800')} w={"100vw"}>
             <Flex h={16} alignItems="center" justifyContent="space-between" mx="auto">
@@ -113,7 +262,9 @@ export default function Navbar() {
                             src='https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/Screenshot%202024-05-22%20114636.png?alt=media&token=ab89da81-f5b1-4c72-8268-321237165b37'
                             display={{ base: 'none', md: 'inherit' }}
                             onClick={onModalOpen}
-                        />
+                        >
+                            {hasUnreadNotifications && <AvatarBadge bg='red' boxSize='1em' />}
+                        </Avatar>
                         <button onClick={() => navigate(`/Profile/${currentUser.uid}`)} id='profile-pic' style={{ borderRadius: '50%', marginRight: "1vw" }} display={{ base: 'inherit', md: 'none', xl: 'none', sm: 'none' }}>
                             <img style={{ borderRadius: '50%' }} width={'45vw'} src={currentUser?.photoURL} alt="" />
                         </button>
@@ -153,34 +304,73 @@ export default function Navbar() {
             <Modal isOpen={isModalOpen} onClose={onModalClose} isCentered size={"xl"}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>My Inbox</ModalHeader>
+                    <ModalHeader fontSize={25}>My Inbox</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         {loading ? (
-                            <img style={{ width: "20vw",alignSelf:'center' }} src='https://dogfood2mydoor.com/static/media/dog_load.3a3190f9.gif' />
+                            <Box width={'100%'} display={'flex'} justifyContent={'center'}>
+                                <Spinner thickness='4px'
+                                    speed='0.65s'
+                                    emptyColor='gray.200'
+                                    color='blue.500'
+                                    size='xl' />
+                            </Box>
                         ) : (
                             (notifications.length > 0 ?
                                 (<List spacing={3} mb={'20px'}>
-                                    {notifications.map((notification, index) => (
-                                    <ListItem key={index}>
-                                        <Flex alignItems="center">
-                                            <Avatar src={logo} size="sm" mr={3} />
-                                            <Text>{notification.text}</Text>
-                                            <Text fontSize="sm" color="gray.500" ml="auto">
-                                                {new Date(notification.timestamp).toLocaleDateString()}
-                                            </Text>
-                                        </Flex>
-                                    </ListItem>
+                                    {notifications.reverse().map((notification, index) => (
+                                        <ListItem
+                                            key={index}
+                                            p={3}
+                                            borderRadius="md"
+                                            bg={"white"}
+                                            boxShadow="md"
+                                            _hover={{ boxShadow: 'xl', bg: 'gray.50' }}>
+                                            <Flex alignItems="center">
+                                                <Avatar src={logo} size="sm" mr={3} />
+                                                <Text>{notification.message}</Text>
+                                                <Text fontSize="sm" color="gray.500" ml="auto">
+                                                    {new Date(notification.timestamp).toLocaleDateString()}
+                                                </Text>
+                                            </Flex>
+                                            <Flex justifyContent={'center'} gap={10} mt={2}>
+                                                {currentUser.uid === notification.sender ? (
+                                                    // Adopter's buttons
+                                                    <Button size="sm" colorScheme="blue" onClick={() => ContactPerson(notification.reader)}>
+                                                        View owner's profile
+                                                    </Button>
+                                                ) : (
+                                                    // Owner's buttons
+                                                    <>
+                                                        {notification.requestStatus == 'Pending' && (
+                                                            <>
+                                                                <Button size="sm" colorScheme="green" onClick={() => handleAcceptRequest(notification)}>
+                                                                    Accept
+                                                                </Button>
+                                                                <Button size="sm" colorScheme="red" onClick={() => handleRejectRequest(notification)}>
+                                                                    Reject
+                                                                </Button>
+                                                            </>
+                                                        )}
+                                                        <Button size="sm" colorScheme="blue" onClick={() => ContactPerson(notification.sender)}>
+                                                            View profile
+                                                        </Button>
+                                                    </>
+                                                )}
+                                            </Flex>
+                                        </ListItem>
                                     ))}
                                 </List>)
                                 :
-                                <Text textAlign={"center"}>No notifications</Text>
+                                <Box width={'100%'} display={'flex'} justifyContent={'center'}>
+                                    <img src="https://media.licdn.com/dms/image/C5112AQF93ceYWRJUiQ/article-cover_image-shrink_600_2000/0/1534414530337?e=2147483647&v=beta&t=xAsP5WDskRQxiVdIIzMxKs4tOKyBiUGN4g428BV3kLY" alt="empty notification img" />
+                                </Box>
                             )
-
                         )}
                     </ModalBody>
                 </ModalContent>
             </Modal>
+
             {isOpen && (
                 <Drawer placement={'right'} onClose={onClose} isOpen={isOpen} size={'xs'}>
                     <DrawerOverlay />
@@ -192,6 +382,9 @@ export default function Navbar() {
                                     <img style={{ borderRadius: '50%' }} width={'60vw'} src={currentUser.photoURL} alt="" />
                                 </button>
                             }
+                            {signin && (
+                                <Text onClick={onModalOpen} fontSize={"lg"} my={6}>Inbox</Text>
+                            )}
                             {navLinks.map((link, index) => (
                                 <div key={index}>
                                     <NavLink name={link.name} path={link.path} onClose={onClose} />
