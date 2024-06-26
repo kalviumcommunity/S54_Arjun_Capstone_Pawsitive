@@ -79,19 +79,13 @@ const Login = () => {
         }
     };
 
-    function handlePasswordReset() {
-        const email = prompt('Please enter your email');
-        sendPasswordResetEmail(auth, email);
-        alert('Email sent! Check your inbox for password reset instructions.');
-    }
-
     return (
         <div style={{ width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Container maxW="7xl" p={{ base: 5, md: 10 }}>
                 <Center>
                     <Stack spacing={4}>
                         <Stack align="center">
-                            <Heading fontSize="2xl">Sign in to your account</Heading>
+                            <Heading fontSize="2xl">Sign in</Heading>
                         </Stack>
                         <VStack
                             as="form"
@@ -117,10 +111,6 @@ const Login = () => {
                                                 h="1.75rem"
                                                 size="sm"
                                                 rounded="md"
-                                                // bg={useColorModeValue('gray.300', 'gray.700')}
-                                                // _hover={{
-                                                //     bg: useColorModeValue('gray.400', 'gray.800')
-                                                // }}
                                                 onClick={handleClick}
                                             >
                                                 {show ? <ViewOffIcon /> : <ViewIcon />}
@@ -129,10 +119,13 @@ const Login = () => {
                                     </InputGroup>
                                 </FormControl>
                             </VStack>
+                            {error && <p style={{color:"red"}} >{error}</p>}
                             <VStack w="100%">
-                                <Stack direction="row" justifyContent="space-between" w="100%">
-                                    <Link onClick={handlePasswordReset} fontSize={{ base: 'md', sm: 'md' }}>Forgot password?</Link>
-                                    <Link onClick={()=>navigate("/signup")} fontSize={{ base: 'md', sm: 'md' }}>Signup</Link>
+                                <Stack w="100%" mb={4}>
+                                    <Text fontSize={'md'}>
+                                        Dont have an account ??  
+                                        <Link onClick={()=>navigate("/signup")} fontSize={'md'} color={'blue'}>  Signup</Link>
+                                    </Text>
                                 </Stack>
                                 <Button
                                     onClick={(e) => { handleLogin(e) }}
@@ -146,9 +139,10 @@ const Login = () => {
                                 >
                                     Sign in
                                 </Button>
-                                {error && <p>{error}</p>}
 
-                                <Text size={'2xl'}>----------------- OR -----------------</Text>
+                                
+
+                                <Text size={'2xl'} my={2}>----------------- OR -----------------</Text>
                                 <GoogleButton onClick={handleGoogleSignIn} />
 
                             </VStack>

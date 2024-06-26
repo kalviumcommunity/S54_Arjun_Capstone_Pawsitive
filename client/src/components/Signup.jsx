@@ -17,7 +17,10 @@ import {
     Link,
     Text,
     position,
-    useToast
+    useToast,
+    Spinner,
+    Box,
+    HStack
 } from '@chakra-ui/react';
 import { auth, db } from '../firebase/firebase.js';
 import { GoogleButton } from 'react-google-button';
@@ -45,10 +48,10 @@ const Signup = () => {
     const [userCredentials, setUserCredentials] = useState({});
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { signin, setSignin, setCurrentUser } = useContext(AuthContext);
+    const { setSignin, setCurrentUser } = useContext(AuthContext);
     const accountcreated = () => {
         toast({
-            title: 'Account created.',
+            title: 'Thank you, your account has been created',
             position: 'bottom',
             description: "We've created your account for you.",
             status: 'success',
@@ -56,18 +59,6 @@ const Signup = () => {
             isClosable: true,
         })
     }
-
-
-    // onAuthStateChanged(auth, (user) => {
-    //     if (user) {
-    //         console.log(user)
-    //         setCurrentUser(user)
-    //         setSignin(true)
-    //         navigate("/");
-    //     } else {
-    //         console.log('err')
-    //     }
-    // })
 
     function handleCredentials(e) {
         setUserCredentials({ ...userCredentials, [e.target.name]: e.target.value });
@@ -151,7 +142,8 @@ const Signup = () => {
         <div style={{ width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Container maxW="7xl" p={{ base: 5, md: 10 }}>
                 <Center>
-                    <Stack spacing={4}>
+                    <VStack spacing={4}>
+                        {/* <img src={logo} width={'20%'} alt="" /> */}
                         <Stack align="center">
                             <Heading fontSize="3xl">Create Your Account</Heading>
                         </Stack>
@@ -172,21 +164,17 @@ const Signup = () => {
                                 </FormControl>
                                 <FormControl id="email">
                                     <FormLabel>Email</FormLabel>
-                                    <Input onChange={(e) => { handleCredentials(e) }} rounded="md" type="email" name='email' required inputMode='email'/>
+                                    <Input onChange={(e) => { handleCredentials(e) }} rounded="md" type="email" name='email' required inputMode='email' />
                                 </FormControl>
                                 <FormControl id="password">
                                     <FormLabel>Password</FormLabel>
                                     <InputGroup size="md">
-                                        <Input onChange={(e) => { handleCredentials(e) }} name='password' rounded="md" type={show ? 'text' : 'password'} required inputMode='password'/>
+                                        <Input onChange={(e) => { handleCredentials(e) }} name='password' rounded="md" type={show ? 'text' : 'password'} required inputMode='password' />
                                         <InputRightElement width="4.5rem">
                                             <Button
                                                 h="1.75rem"
                                                 size="sm"
                                                 rounded="md"
-                                                // bg={useColorModeValue('gray.300', 'gray.700')}
-                                                // _hover={{
-                                                //     bg: useColorModeValue('gray.400', 'gray.800')
-                                                // }}
                                                 onClick={handleClick}
                                             >
                                                 {show ? <ViewOffIcon /> : <ViewIcon />}
@@ -214,15 +202,24 @@ const Signup = () => {
                                 >
                                     Sign up
                                 </Button>
-                                {loading && <p>Creating your account, please wait...</p>}
-                                {error && <p>{error}</p>}
+                                {loading && (
+                                    <Box width={'100%'} display={'flex'} justifyContent={'center'} mt={7}>
+                                        <Spinner
+                                            thickness='4px'
+                                            speed='0.65s'
+                                            emptyColor='gray.200'
+                                            color='blue.500'
+                                            size='xl' />
+                                    </Box>
+                                )}
+                                {error && <p style={{color:'red'}}>{error}</p>}
 
-                                <Text size={'2xl'}>----------------- OR -----------------</Text>
+                                <Text size={'2xl'} my={2}>----------------- OR -----------------</Text>
                                 <GoogleButton type='dark' label='Sign up with Google' onClick={handleGoogleSignIn} />
 
                             </VStack>
                         </VStack>
-                    </Stack>
+                    </VStack>
                 </Center>
             </Container>
         </div >
