@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../Navbar.jsx';
 import AdoptCarousal from './AdoptCarousal.jsx';
 import { FaArrowCircleDown } from "react-icons/fa";
-import { Box, SimpleGrid, Text, Button } from '@chakra-ui/react';
+import { Box, SimpleGrid, Text, Button, Spinner } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import dogAdopt from '../../assets/dogAdopt.png';
@@ -39,25 +39,28 @@ const Adopt = () => {
   const [filteredPets, setFilteredPets] = useState([]);
   const [filter, setFilter] = useState('');
   const [rowsToShow, setRowsToShow] = useState(3);
-  const [loaded,setLoaded]=useState(false)
-
+  const [loaded, setLoaded] = useState(false)
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     getPets();
   }, []);
 
   const getPets = async () => {
     try {
+      setLoading(true)
       const response = await axios.get('https://pawsitive-backend-seven.vercel.app/pet/all');
       setPets(response.data.reverse());
       setFilteredPets(response.data.reverse());
       setLoaded(true)
     } catch (error) {
       console.error('Error fetching pets:', error);
+    } finally {
+      setLoading(false)
     }
   };
 
   const handleCategoryClick = (category) => {
-    setRowsToShow(3); // Reset to initial rows on category change
+    setRowsToShow(3);
     if (category === 'dog') {
       setFilter('dog');
       setFilteredPets(pets.filter((pet) => pet.species.toLowerCase() === 'dog'));
@@ -75,7 +78,7 @@ const Adopt = () => {
   };
 
   const handleViewMore = () => {
-    setRowsToShow(rowsToShow + 1); // Increase the number of rows by 1
+    setRowsToShow(rowsToShow + 1);
   };
 
   return (
@@ -98,8 +101,19 @@ const Adopt = () => {
         <CategoryBox image={pawAdopt} text="Others" onClick={() => handleCategoryClick('other')} />
         <CategoryBox image={plusAdopt} text="Add Pet" onClick={handlePostPetClick} />
       </SimpleGrid>
-
-      {filteredPets?.length === 0 && loaded==true ? (
+      {
+        loading && (
+          <Box width={'100%'} display={'flex'} justifyContent={'center'} mt={7}>
+            <Spinner
+              thickness='4px'
+              speed='0.65s'
+              emptyColor='gray.200'
+              color='blue.500'
+              size='xl' />
+          </Box>
+        )
+      }
+      {filteredPets?.length === 0 && loaded == true ? (
         <Box textAlign="center" mt={4}>
           <Text fontSize="xl">No pets available in this category.</Text>
         </Box>
@@ -111,9 +125,9 @@ const Adopt = () => {
             ))}
           </SimpleGrid>
 
-          {filteredPets.length > rowsToShow * 4 && ( 
+          {filteredPets.length > rowsToShow * 4 && (
             <Box textAlign="center" mt={4} mb={4}>
-              <Button colorScheme='blue' onClick={handleViewMore}  rightIcon={<FaArrowCircleDown/>} >View More</Button>
+              <Button colorScheme='blue' onClick={handleViewMore} rightIcon={<FaArrowCircleDown />} >View More</Button>
             </Box>
           )}
         </>
