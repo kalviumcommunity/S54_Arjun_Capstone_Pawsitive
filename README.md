@@ -1,30 +1,30 @@
-## PAWSITIVE
-Welcome to Pawsitive, a community-driven platform dedicated to animal welfare and advocacy. Pawsitive aims to bring together animal lovers from around the world to share their stories, insights, and experiences, while also providing practical tools for supporting and improving the lives of animals in need.
+# <ins>*PAWSITIVE*</ins>  
 
-## Deployed frontend link
-https://pawsitive-roan.vercel.app/
+Welcome to **Pawsitive**, your dedicated platform for animal welfare. At Pawsitive, we bring together animal lovers globally to promote compassion and support for animals in need.
 
-## Features
+### Overview
+Pawsitive offers a holistic approach to animal welfare, featuring opportunities for pet adoption, insightful blogs on many topics of animal care, direct messaging for collaboration, and ways to contribute through donations.
 
-- **Pawsitive Community**: Share your stories and experiences with fellow animal lovers.
-- **Insightful Blogs**: Explore and contribute to informative blogs on animal welfare.
-- **Adoption and Rescue**: Find pets for adoption or report animal violence.
-- **Donation Page**: Support animal welfare organizations through donations.
+### Deployed Links
+- **Client**: [Pawsitive](https://pawsitive-roan.vercel.app)
+- **Server**: [Pawsitive Server](https://pawsitive-backend-seven.vercel.app)
+- **Figma Prototype**: [Pawsitive Figma Prototype](https://www.figma.com/design/wWHIPronfMhKasTWcCqDUZ/Arjun_S54_Capstone_Pawsitive?node-id=0-1&t=c5TpzorweC5yGc5H-0)
 
-## Setup
+### Key Features
+- **Adoption Hub**: Find pets ready for adoption and give them a loving home.
+- **Informative Blogs**: Explore and contribute to articles covering diverse topics in animal welfare.
+- **Direct Messaging**: Connect with other users to share ideas and collaborate on initiatives.
+- **Support**: Contribute to animal welfare organizations through our donation page.
 
-1. Clone the repository.
-2. Install dependencies for both frontend and backend.
-3. Start the backend and frontend servers.
-4. Open your browser and navigate to `http://localhost:3000`.
+### Technologies Used
+- **Frontend**: React.js
+- **UI Library**: Chakra UI, SASS
+- **Backend**: Node.js, Express
+- **Authentication**: Firebase
+- **Database**: MongoDB, Firebase
+- **Important Libraries**: Razorpay, Nodemailer, Dompurify, Rate-limiter, react-quill, uuid
 
-## Contributing
+### Contact
+Have any interesting ideas to share? Contact me at [pawsitive113@gmail.com](mailto:pawsitive113@gmail.com).
 
-We welcome contributions to improve Pawsitive! 
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/your-feature`).
-3. Make your changes and commit.
-4. Push to the branch (`git push origin feature/your-feature`).
-5. Create a new Pull Request.
-
-Together, let's make a positive impact on animal welfare!
+Join me in creating a more compassionate world for animals with Pawsitive! 🐾
