@@ -35,6 +35,7 @@ const ViewPet = () => {
       setLoading(true)
       const res = await axios.get(`https://pawsitive-backend-seven.vercel.app/pet/${petId}`);
       setPet(res.data);
+      console.log("res.data: ", res.data);
       getOwner(res.data.createdBy);
     } catch (err) {
       console.error('Error getting Pet:', err);
@@ -169,7 +170,8 @@ const ViewPet = () => {
         requestStatus: 'Pending', // Request is pending initially
         petId: petId,
         timestamp: timestamp,
-        reader:owner.uid
+        reader:owner.uid,
+        senderEmail:currentUser.email,
       };
 
       // Notification for the adopter
