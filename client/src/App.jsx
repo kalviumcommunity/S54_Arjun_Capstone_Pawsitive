@@ -7,7 +7,7 @@ import Home from './components/Home'
 import "./style.scss";
 import Community from './components/Community'
 import Adopt from './components/Adopt/Adopt'
-import Donate from './components/Donate'
+// import Donate from './components/Donate'
 import Signup from './components/Signup'
 import Login from './components/Login'
 import Profile from './components/Profile';
@@ -44,7 +44,7 @@ function App() {
         <Route path="/PostPet" element={privateRoute(<PostPet />)} />
         <Route path='/ViewPet/:petId' element={privateRoute(<ViewPet />)} />
 
-        <Route path='/Donate' element={privateRoute(<Donate />)} />
+        {/* <Route path='/Donate' element={privateRoute(<Donate />)} /> */}
         <Route path='/Community' element={privateRoute(<Community />)} />
       </Routes>
     </ChakraProvider>

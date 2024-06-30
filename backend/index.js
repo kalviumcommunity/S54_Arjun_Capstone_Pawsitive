@@ -3,9 +3,10 @@ const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
-const Razorpay = require('razorpay');
-const crypto = require('crypto');
-const exp = require('constants');
+const Razorpay = require("razorpay");
+const crypto = require("crypto");
+const bodyParser = require("body-parser");
+const exp = require("constants");
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 
@@ -15,12 +16,14 @@ mongoose
   .catch((err) => console.error("Failed to connect to MongoDB ❌", err));
 
 app.use(express.json());
+app.use(bodyParser.json());
 
-const BlogRoutes = require("./Routes/BlogRoutes")
+const BlogRoutes = require("./Routes/BlogRoutes");
 const PetRoutes = require("./Routes/PetRoutes");
+const sendMail = require("./nodemailer");
 
-app.use('/blog', BlogRoutes);
-app.use('/pet',PetRoutes)
+app.use("/blog", BlogRoutes);
+app.use("/pet", PetRoutes);
 
 app.get("/ping", (req, res) => {
   res.send("pong");
@@ -31,49 +34,45 @@ app.listen(PORT, () => {
   console.log(`🚀 server running on PORT: ${PORT}`);
 });
 
+// Nodemailer Routes
+
+app.post("/sendMail", async (req, res) => {
+  const mailOptions = req.body;
+  try {
+    const info = await sendMail(mailOptions);
+    console.log("Email sent: ", info.response);
+    res.status(200).send("Email sent successfully.");
+  } catch (error) {
+    console.error("Error sending email: ", error);
+    res.status(500).send("Failed to send email.");
+  }
+});
+
 // Razorpay routes
 
-app.post("/order", async (req, res) => {
+var instance = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_SECRET
+});
+
+app.post("/checkout", async (req, res) => {
   try {
-      const razorpay = new Razorpay({
-          key_id: process.env.RAZORPAY_KEY_ID,
-          key_secret: process.env.RAZORPAY_SECRET
-      });
-
-
-      if (!req.body) {
-          return res.status(400).send("Bad Request");
-      }
-
-      const options = req.body;
-      const order = await razorpay.orders.create(options);
-
-      if (!order) {
-          return res.status(400).send("Bad Request");
-      }
-
-      res.json(order);
-
+    const options = {
+      amount: Number(req.body.amount * 100),
+      currency: "INR",
+    };
+    const order = await instance.orders.create(options);
+    res.status(200).json({
+      success: true,
+      order,
+    });
   } catch (error) {
-      console.log(error);
-      res.status(500).send(error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
-})
-
-app.post("/validate", async (req, res) => {
-
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body
-
-  const sha = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET);
-  // order_id + " | " + razorpay_payment_id
-
-  sha.update(`${razorpay_order_id}|${razorpay_payment_id}`);
-
-  const digest = sha.digest("hex");
-
-  if (digest !== razorpay_signature) {
-      return res.status(400).json({ msg: " Transaction is not legit!" });
-  }
-
-  res.json({ msg: " Transaction is legit!", orderId: razorpay_order_id, paymentId: razorpay_payment_id });
-})
+});
+app.get("/api/getkey", (req, res) => {
+  res.status(200).json({ key: process.env.RAZORPAY_KEY_ID });
+});
