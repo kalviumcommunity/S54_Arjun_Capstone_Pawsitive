@@ -36,6 +36,7 @@ import {
     List,
     ListItem,
     AvatarBadge,
+    useToast,
 } from '@chakra-ui/react';
 import { arrayRemove, arrayUnion, collection, doc, onSnapshot, runTransaction, setDoc, updateDoc } from 'firebase/firestore';
 import logo from "../assets/Group 4.svg";
@@ -44,6 +45,7 @@ import { auth, db } from '../firebase/firebase';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import PropTypes from 'prop-types';
 import { ChatContext } from '../context/ChatContext';
+import axios from 'axios';
 
 const navLinks = [
     { name: 'Adopt', path: '/Adopt' },
@@ -60,12 +62,13 @@ export default function Navbar() {
     const { signin, setSignin, currentUser } = useContext(AuthContext);
     const localPhoto = localStorage.getItem('photoURL');
     const localSignin = localStorage.getItem('signin');
+    const toast = useToast()
 
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(false);
     const { dispatch } = useContext(ChatContext);
     const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
-
+    // const [acceptPetDetails,setAcceptPetDetails]=useState()
     useEffect(() => {
         if (currentUser && currentUser.uid) {
             setLoading(true);
@@ -126,21 +129,96 @@ export default function Navbar() {
         }
     };
 
-    const getUser = async (uid) => {
+    const getPet = async (petId) => {
         try {
-            const docRef = doc(db, "users", uid);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                const userData = docSnap.data();
-                console.log("User data:", userData);
-            } else {
-                console.log("No such document!");
-            }
+            const res = await axios.get(`https://pawsitive-backend-seven.vercel.app/pet/${petId}`);
+            return res.data;
         } catch (err) {
-            console.error("Error fetching user:", err);
+            console.error('Error getting Pet:', err);
+            throw err;
         }
     };
 
+    const sendMail = async (mailOptions) => {
+        try {
+            const response = await axios.post('https://pawsitive-backend-seven.vercel.app/sendMail', mailOptions);
+            console.log('Email response:', response.data);
+            if (response.data === 'Email sent successfully.') {
+                toast({
+                    title: 'Adopter Informed',
+                    position: 'top-right',
+                    description: "An email has been successfully sent to the adopter with your contact information.",
+                    status: 'success',
+                    duration: 3000,
+                    isClosable: true,
+                });
+            } else {
+                toast({
+                    title: 'Email Not Sent',
+                    position: 'top-right',
+                    description: "The email was not sent to the adopter. Please verify the email address and try again.",
+                    status: 'error',
+                    duration: 5000,
+                    isClosable: true,
+                });
+            }
+        } catch (error) {
+            console.error('Error sending email:', error);
+            toast({
+                title: 'Error',
+                description: "There was an error sending the email. Please contact the adopter directly.",
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+            });
+        }
+    };
+    
+
+    const emailSend = async (petId, email) => {
+        try {
+            const petDetails = await getPet(petId);
+
+            const mailOptions = {
+                from: 'jahnavreddy12@gmail.com',
+                to: email,
+                subject: `Adoption Request Approved for ${petDetails.name}`,
+                html: `
+                    <h1>Adoption Request Approved</h1>
+                    <p>Dear Adopter,</p>
+                    <p>We are pleased to inform you that your adoption request for the following pet has been approved:</p>
+                    <h2>Pet Details:</h2>
+                    <ul>
+                        <li><strong>Name:</strong> ${petDetails.name}</li>
+                        <li><strong>Species:</strong> ${petDetails.species}</li>
+                        <li><strong>Breed:</strong> ${petDetails.breed}</li>
+                        <li><strong>Age:</strong> ${petDetails.age} years</li>
+                        <li><strong>Gender:</strong> ${petDetails.gender}</li>
+                        <li><strong>Color:</strong> ${petDetails.color}</li>
+                        <li><strong>Weight:</strong> ${petDetails.weight} kg</li>
+                        <li><strong>Location:</strong> ${petDetails.location}</li>
+                        <li><strong>Adoption Fee:</strong> ${petDetails.adoptionFee} Rs</li>
+                    </ul>
+                    <h2>Owner's Contact Information</h2>
+                    <ul>
+                        <li><strong>Mobile Number:</strong> ${petDetails.contact}</li>
+                        <li><strong>Email:</strong> ${email}</li>
+                    </ul>
+                    <p><strong>Please Note:</strong> The owner's contact information is provided solely for arranging the adoption of ${petDetails.name}. Please use this information responsibly and refrain from misuse or unauthorized contact.</p>
+                    <h2>Photos:</h2>
+                    ${petDetails.photos.map(photo => `<img src="${photo}" alt="${petDetails.name}" style="max-width: 25%; height: auto; margin-left: 5%;" />`).join('')}
+                    <p>Additional Information: ${petDetails.additionalInfo}</p>
+                    <p>We hope you are excited to welcome ${petDetails.name} into your home. Please contact the owner for further arrangements.</p>
+                    <p>Sincerely,<br/>The Adoption Team</p>
+                `
+            };
+
+            await sendMail(mailOptions);
+
+        } catch (err) {
+            console.log("emailSend error: ", err);
+        }
+    };
 
     const handleAcceptRequest = async (notification) => {
         try {
@@ -175,12 +253,14 @@ export default function Navbar() {
                     ...notification,
                     requestStatus: 'Accepted',
                     read: false,
-                    message:'Thank you for accepting the adoption request.',
+                    message: 'Thank you for accepting the adoption request.',
                 };
                 transaction.update(inboxRef, {
                     notifications: arrayUnion(updatedNotification),
                 });
             });
+            await emailSend(notification.petId, notification.senderEmail)
+
         } catch (err) {
             console.error("Error accepting request:", err);
             toast({
@@ -265,9 +345,7 @@ export default function Navbar() {
                         >
                             {hasUnreadNotifications && <AvatarBadge bg='red' boxSize='1em' />}
                         </Avatar>
-                        <button onClick={() => navigate(`/Profile/${currentUser.uid}`)} id='profile-pic' style={{ borderRadius: '50%', marginRight: "1vw" }} display={{ base: 'inherit', md: 'none', xl: 'none', sm: 'none' }}>
-                            <img style={{ borderRadius: '50%' }} width={'45vw'} src={currentUser?.photoURL} alt="" />
-                        </button>
+                        <Avatar src={currentUser?.photoURL} size={'md'} onClick={() => navigate(`/Profile/${currentUser.uid}`)} mr={4} cursor={'pointer'} display={{ base: 'none', lg: 'inherit' }} />
                         <Popover isOpen={isPopoverOpen} onOpen={onPopoverOpen} onClose={onPopoverClose}>
                             <PopoverTrigger>
                                 <Button bg={"#FBBC05"} size="lg" borderRadius={"30px"} display={{ base: 'none', md: 'block' }} _hover={"none"} mr={2} color={'white'} outline={"none"} _active={{ bg: "#FBBC05" }}>
