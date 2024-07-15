@@ -4,7 +4,7 @@ Welcome to Pawsitive, your dedicated platform for animal welfare. At Pawsitive, 
 
 ## Deployed Links
 
-- **Client**: [Pawsitive](https://pawsitive-roan.vercel.app/)
+- **Client**: [Pawsitive](https://pawsitive-pet-welfare.vercel.app/)
 - **Server**: [Pawsitive Server](https://pawsitive-backend-seven.vercel.app)
 - **Figma Prototype**: [Pawsitive Figma Prototype](https://www.figma.com/design/wWHIPronfMhKasTWcCqDUZ/Arjun_S54_Capstone_Pawsitive?node-id=0-1&t=6mK2eCU1EN9ize2U-1)
 
