@@ -33,7 +33,7 @@ const CreateBlog = () => {
     const createNewBlog= async ()=>{
         try {
             console.log("input: ", input);
-            let res = await axios.post('https://pawsitive-backend-seven.vercel.app/blog', input);
+            let res = await axios.post(`${import.meta.env.VITE_backendURL}/blog`, input);
             if (res.status === 201) {
                 navigate("/Blog")
             } else {

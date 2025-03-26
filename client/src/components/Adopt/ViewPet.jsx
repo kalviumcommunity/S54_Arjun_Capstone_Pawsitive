@@ -1,16 +1,18 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { arrayRemove, arrayUnion, doc, getDoc, getDocs, onSnapshot, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import axios from 'axios';
 import Navbar from '../Navbar';
 import { v4 as uuidv4 } from 'uuid';
-import { Box, Button, Flex, Heading, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Text, HStack, Circle, AspectRatio, Icon, VStack, ModalHeader, useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, useToast } from '@chakra-ui/react';
+import { Box, Button, Heading, Image, Modal, ModalOverlay, ModalContent, ModalBody, ModalCloseButton, Text, HStack, Circle, Icon, VStack, ModalHeader, useDisclosure, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter, useToast } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { FaHeart, FaMapMarkerAlt, FaRegHeart } from 'react-icons/fa';
 import { AuthContext } from '../../context/AuthContext';
 import { ChatContext } from '../../context/ChatContext';
 import { FaShareFromSquare } from "react-icons/fa6";
+import Loader from '../../assets/loader-img.gif';
+import Thankyou from '../../assets/Thankyou.gif';
 
 const ViewPet = () => {
   const { petId } = useParams();
@@ -33,7 +35,7 @@ const ViewPet = () => {
   const getPet = async () => {
     try {
       setLoading(true)
-      const res = await axios.get(`https://pawsitive-backend-seven.vercel.app/pet/${petId}`);
+      const res = await axios.get(`${import.meta.env.VITE_backendURL}/pet/${petId}`);
       setPet(res.data);
       console.log("res.data: ", res.data);
       getOwner(res.data.createdBy);
@@ -275,7 +277,7 @@ const ViewPet = () => {
           </Box>
         )
       }
-      {loading ? <img id='loader-img' src='https://dogfood2mydoor.com/static/media/dog_load.3a3190f9.gif' /> : <Box mt={8} display={"flex"} flexDirection={{ base: "column", md: "row" }} alignItems={{ base: "inherit", md: "center" }} >
+      {loading ? <img id='loader-img' src={Loader} /> : <Box mt={8} display={"flex"} flexDirection={{ base: "column", md: "row" }} alignItems={{ base: "inherit", md: "center" }} >
 
         <Box flex="1" mr={8} ml={8} position="relative" borderRadius={"20px"} padding={"1vw"} >
           {pet && (
@@ -344,16 +346,10 @@ const ViewPet = () => {
       <Modal isOpen={isFullscreenOpen} onClose={handleCloseFullscreen} blockScrollOnMount={false} motionPreset='slideInBottom' isCentered size={"xl"}>
         <ModalOverlay bg="rgba(0, 0, 0, 0.8)" />
         <ModalContent bg={"transparent"}>
-          {/* <ModalCloseButton color="white" bg={"transparent"} position={"absolute"} top={"0"} right={"0"}/> */}
           <ModalBody display="flex" justifyContent="center" alignItems="center">
             {fullscreenImage && (
               <Image src={fullscreenImage} alt="Fullscreen" maxW="90vw" maxH="85vh" borderRadius="md" />
             )}
-            {/* {Adopted && 
-              <Box>
-
-              </Box>
-              } */}
           </ModalBody>
         </ModalContent>
       </Modal>
@@ -362,7 +358,7 @@ const ViewPet = () => {
         <ModalContent textAlign={"center"} justifyContent={"center"} alignItems={"center"}>
           <ModalCloseButton />
           <img
-            src="https://mobigram.s3.amazonaws.com/production/suggested_mobigram/cover_image/3588/Funny-dog-says-thank-you.gif"
+            src={Thankyou}
             alt="Thank you"
             style={{ height: "50vh", alignSelf: "center" }}
           />

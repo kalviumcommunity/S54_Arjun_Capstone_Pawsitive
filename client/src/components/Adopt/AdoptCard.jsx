@@ -50,7 +50,6 @@ const AdoptCard = ({ pet }) => {
         toast({
             title: 'Added to favourites',
             position: 'top-right',
-            // description: "Visit profile page for your favourite pets",
             status: 'success',
             duration: 3000
         })
@@ -88,7 +87,6 @@ const AdoptCard = ({ pet }) => {
             display="flex"
             flexDirection="column"
             maxW={{ base: '83vw', md: '20vw' }}
-            // maxH={{base:'60vh'}}
             borderWidth="1px"
             borderRadius="30px"
             justifyContent="space-between"
@@ -118,9 +116,6 @@ const AdoptCard = ({ pet }) => {
 
                     <Flex align="center">
                         <Icon as={FaMapMarkerAlt} color="black" w={5} h={5} />
-                        {/* <Text ml={2} textAlign="left" color="grey" w={"5vw"} textOverflow={"ellipsis"}>
-                            {pet.location}
-                        </Text> */}
                         <h2 id='location' >
                             {pet.location}
                         </h2>

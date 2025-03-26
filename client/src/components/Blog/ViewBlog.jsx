@@ -43,7 +43,7 @@ const ViewBlog = () => {
     const getBlog = async () => {
         try {
             setLoading(true)
-            const res = await axios.get(`https://pawsitive-backend-seven.vercel.app/blog/${blogId}`);
+            const res = await axios.get(`${import.meta.env.VITE_backendURL}/blog/${blogId}`);
             setBlog(res.data);
             setLikesCount(res.data.likes.length);
             const didUserLike = res.data.likes.includes(currentUser?.uid);
@@ -57,7 +57,7 @@ const ViewBlog = () => {
 
     const getComments = async () => {
         try {
-            const res = await axios.get(`https://pawsitive-backend-seven.vercel.app/blog/${blogId}/comments`);
+            const res = await axios.get(`${import.meta.env.VITE_backendURL}/blog/${blogId}/comments`);
             setComments(res.data);
             console.log("comments data:- ", res.data);
         } catch (err) {
@@ -84,7 +84,7 @@ const ViewBlog = () => {
 
     const handleCommentSubmit = async () => {
         try {
-            await axios.post(`https://pawsitive-backend-seven.vercel.app/blog/${blogId}/comments`, {
+            await axios.post(`${import.meta.env.VITE_backendURL}/blog/${blogId}/comments`, {
                 commenterId: currentUser.uid,
                 content: newComment
             });
@@ -105,7 +105,7 @@ const ViewBlog = () => {
     };
     const handleLikeBlog = async () => {
         try {
-            const res = await axios.put(`https://pawsitive-backend-seven.vercel.app/blog/${blogId}/like`, {
+            const res = await axios.put(`${import.meta.env.VITE_backendURL}/blog/${blogId}/like`, {
                 userId: currentUser.uid,
             });
             console.log("res: ", res);

@@ -10,6 +10,8 @@ import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Timestamp, doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
+import AdoptMe from '../assets/AdoptMe.jpg';
+import DonateImg from '../assets/DonateImg.jpeg';
 
 const Home = () => {
 
@@ -20,12 +22,12 @@ const Home = () => {
   const navigate = useNavigate();
 
   const pets = [
-    { id: 1, name: 'Tyson', image: 'https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/pet-image-4344.jpeg?alt=media&token=1746caec-85ee-4051-86e2-db8c783a372f' },
+    { id: 1,UID:"664c971f82617af1647fc2dc", name: 'Tyson', image: 'https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/pet-image-4344.jpeg?alt=media&token=1746caec-85ee-4051-86e2-db8c783a372f' },
     // { id: 2, name: 'Isha', image: 'https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/pet-image-039b.jpeg?alt=media&token=4c4be4d1-3bb5-466a-aabe-6b610a6840e5' },
-    { id: 3, name: 'Archie', image: 'https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/ietb.jpeg?alt=media&token=f9293814-de92-4df0-9598-550c8f66620c' },
-    { id: 4, name: 'Mikey', image: 'https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/pet-image-f4b1.jpeg?alt=media&token=0d0c4391-26cd-4f3f-a83a-dac41c9b4735' },
-    { id: 5, name: 'Liger', image: 'https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/liger.jpeg?alt=media&token=6cbc2fe5-a6c2-470e-9899-1987219750a1' },
-    { id: 6, name: 'Yuri', image: 'https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/pet-image-d665.jpeg?alt=media&token=9ecf0911-455b-4466-9e21-9d12da863576' },
+    { id: 3,UID:"6629edd04823ddb7fee7a022", name: 'Archie', image: 'https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/ietb.jpeg?alt=media&token=f9293814-de92-4df0-9598-550c8f66620c' },
+    { id: 4,UID:"664c97bc82617af1647fc2df", name: 'Mikey', image: 'https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/pet-image-f4b1.jpeg?alt=media&token=0d0c4391-26cd-4f3f-a83a-dac41c9b4735' },
+    { id: 5,UID:"664c90ac01824d321fd238ea", name: 'Liger', image: 'https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/liger.jpeg?alt=media&token=6cbc2fe5-a6c2-470e-9899-1987219750a1' },
+    { id: 6,UID:"664ca12ae044e4ceaa64c1ed", name: 'Yuri', image: 'https://firebasestorage.googleapis.com/v0/b/pawsitive-64728.appspot.com/o/pet-image-d665.jpeg?alt=media&token=9ecf0911-455b-4466-9e21-9d12da863576' },
   ];
 
   const checkoutHandler = async (amount) => {
@@ -40,7 +42,7 @@ const Home = () => {
         });
         navigate('/login')
       }
-      const { data: { order } } = await axios.post("https://pawsitive-backend-seven.vercel.app/checkout", { amount });
+      const { data: { order } } = await axios.post(`${import.meta.env.VITE_backendURL}/checkout`, { amount });
 
       const options = {
         key,
@@ -105,6 +107,9 @@ const Home = () => {
       });
     }
   };
+  const HandlePetClick = (UID) => {
+    navigate(`/ViewPet/${UID}`);
+  };
   return (
     <>
       <Navbar />
@@ -128,6 +133,8 @@ const Home = () => {
               flexDirection="column"
               alignItems="center"
               borderWidth="1px"
+              cursor={'pointer'}
+              onClick={()=>HandlePetClick(pet.UID)}
               borderRadius="20px"
               boxShadow="lg"
               _hover={{ boxShadow: '2xl' }}
@@ -159,7 +166,7 @@ const Home = () => {
         </Text>
         <Flex flexDirection={{ base: 'column', md: 'row' }} alignItems="center" justifyContent="center">
           <Image
-            src={'https://dm6g3jbka53hp.cloudfront.net/static-images/adopt-me-pet-02032021.jpg'}
+            src={AdoptMe}
             alt="Adopt a pet"
             borderRadius="20px"
             maxH={'75vh'}
@@ -216,7 +223,7 @@ const Home = () => {
             justifyContent="center"
           >
             <Image
-              src={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOIyrXX-dKHYCQuz2iMBdo3PHqlGLo5g8h5Q&s'}
+              src={DonateImg}
               alt="Donate for a cause"
               borderRadius="20px"
               minW={{ base: '80%', md: '40%' }}

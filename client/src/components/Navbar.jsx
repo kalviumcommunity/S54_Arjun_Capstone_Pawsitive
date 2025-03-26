@@ -46,12 +46,12 @@ import { HamburgerIcon } from '@chakra-ui/icons';
 import PropTypes from 'prop-types';
 import { ChatContext } from '../context/ChatContext';
 import axios from 'axios';
+import emptyNotification from "../assets/emptyNotification.jpeg";
 
 const navLinks = [
     { name: 'Adopt', path: '/Adopt' },
     { name: 'Blog', path: '/Blog' },
     { name: 'Message', path: '/community' },
-    // { name: 'Donate', path: '/Donate' }
 ];
 
 export default function Navbar() {
@@ -68,7 +68,6 @@ export default function Navbar() {
     const [loading, setLoading] = useState(false);
     const { dispatch } = useContext(ChatContext);
     const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
-    // const [acceptPetDetails,setAcceptPetDetails]=useState()
     useEffect(() => {
         if (currentUser && currentUser.uid) {
             setLoading(true);
@@ -131,7 +130,7 @@ export default function Navbar() {
 
     const getPet = async (petId) => {
         try {
-            const res = await axios.get(`https://pawsitive-backend-seven.vercel.app/pet/${petId}`);
+            const res = await axios.get(`${import.meta.env.VITE_backendURL}/pet/${petId}`);
             return res.data;
         } catch (err) {
             console.error('Error getting Pet:', err);
@@ -141,7 +140,7 @@ export default function Navbar() {
 
     const sendMail = async (mailOptions) => {
         try {
-            const response = await axios.post('https://pawsitive-backend-seven.vercel.app/sendMail', mailOptions);
+            const response = await axios.post(`${import.meta.env.VITE_backendURL}/sendMail`, mailOptions);
             console.log('Email response:', response.data);
             if (response.data === 'Email sent successfully.') {
                 toast({
@@ -180,7 +179,7 @@ export default function Navbar() {
             const petDetails = await getPet(petId);
 
             const mailOptions = {
-                from: 'jahnavreddy12@gmail.com',
+                from: import.meta.env.VITE_Nodemailer_UserID,
                 to: email,
                 subject: `Adoption Request Approved for ${petDetails.name}`,
                 html: `
@@ -441,7 +440,7 @@ export default function Navbar() {
                                 </List>)
                                 :
                                 <Box width={'100%'} display={'flex'} justifyContent={'center'}>
-                                    <img src="https://media.licdn.com/dms/image/C5112AQF93ceYWRJUiQ/article-cover_image-shrink_600_2000/0/1534414530337?e=2147483647&v=beta&t=xAsP5WDskRQxiVdIIzMxKs4tOKyBiUGN4g428BV3kLY" alt="empty notification img" />
+                                    <img src={emptyNotification} alt="empty notification img" />
                                 </Box>
                             )
                         )}

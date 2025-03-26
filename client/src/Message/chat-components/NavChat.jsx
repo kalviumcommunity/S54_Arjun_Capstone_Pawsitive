@@ -9,11 +9,6 @@ const NavChat= () => {
 
   return (
     <div  className='navbar' style={{display: 'flex', justifyContent: 'center', alignItems: 'center',gap:'0 6px',borderBottom:'solid 1px black' }}>
-      {/* <div className="user"> */}
-      {/* <img src={currentUser.photoURL} alt="" /> */}
-      {/* <span>{currentUser.displayName}</span> */}
-      {/* <button onClick={()=>signOut(auth)}>logout</button> */}
-      {/* </div> */}
       <img width={'30vw'} src={Message} alt="" />
         <Text fontSize={{base:'2xl',md:'3xl'}}>Message</Text>
     </div>

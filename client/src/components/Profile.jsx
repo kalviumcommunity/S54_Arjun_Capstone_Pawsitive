@@ -13,6 +13,8 @@ import BlogCard from './Blog/BlogCard';
 import { ChatContext } from '../context/ChatContext';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { updateProfile } from 'firebase/auth';
+import Loader from '../assets/loader-img.gif';
+
 
 const Profile = () => {
   const { uid } = useParams();
@@ -65,7 +67,7 @@ const Profile = () => {
   const fetchSavedBlogs = async (blogIds) => {
     try {
       if (blogIds && blogIds.length > 0) {
-        const response = await axios.get('https://pawsitive-backend-seven.vercel.app/blog/blogs/saved', {
+        const response = await axios.get(`${import.meta.env.VITE_backendURL}/blog/blogs/saved`, {
           params: { blogIds: blogIds.filter(id => id).join(',') }
         });
         setSavedBlogs(response.data);
@@ -80,7 +82,7 @@ const Profile = () => {
       if (petIds && petIds.length > 0) {
         const validPetIds = petIds.filter(id => id);
         if (validPetIds.length > 0) {
-          const response = await axios.get('https://pawsitive-backend-seven.vercel.app/pet/pets/favorite', {
+          const response = await axios.get(`${import.meta.env.VITE_backendURL}/pet/pets/favorite`, {
             params: { petIds: validPetIds.join(',') }
           });
           setFavoritePets(response.data);
@@ -219,11 +221,10 @@ const Profile = () => {
       <Navbar />
       {
         loading ? (
-          <img id='loader-img' src='https://dogfood2mydoor.com/static/media/dog_load.3a3190f9.gif' alt="Loading" />
+          <img id='loader-img' src={Loader} alt="Loading" />
         ) : (
           <div style={{ width: '100%', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
             <VStack width={'100%'}>
-              {/* <Image src={user.photoURL} borderRadius={'50px'} alt="" w={{ base: '35vw', md: '12vw' }} /> */}
               <Avatar src={user.photoURL} size={'2xl'}></Avatar>
               <HStack ml={'1vw'}>
                 <Text fontWeight={'600'} fontSize={'3xl'}>{user.displayName}</Text>
@@ -246,8 +247,6 @@ const Profile = () => {
               {user?.bio && (
                 <Text>{user.bio}</Text>
               )}
-              {/* {own && (
-                <> */}
               <ButtonGroup variant="ghost" spacing="6" mt="4">
                 <Button
                   borderRadius={selectedSection === 'savedBlogs' ? '10px 10px 0 0' : '10px'}
@@ -298,8 +297,6 @@ const Profile = () => {
                   )
                 )}
               </Box>
-              {/* </>
-              )} */}
             </VStack>
             <Modal isOpen={isOpen} onClose={onClose} isCentered>
               <ModalOverlay />
