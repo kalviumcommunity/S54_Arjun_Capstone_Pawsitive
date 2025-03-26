@@ -143,7 +143,6 @@ const Signup = () => {
             <Container maxW="7xl" p={{ base: 5, md: 10 }}>
                 <Center>
                     <VStack spacing={4}>
-                        {/* <img src={logo} width={'20%'} alt="" /> */}
                         <Stack align="center">
                             <Heading fontSize="3xl">Create Your Account</Heading>
                         </Stack>

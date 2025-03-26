@@ -53,7 +53,6 @@ const BlogCard = ({ blog, bloggers }) => {
         toast({
             title: 'Blog saved successfully',
             position: 'top-right',
-            // description: "Visit profile page for your favourite pets",
             status: 'success',
             duration: 3000
         })

@@ -7,7 +7,6 @@ import Home from './components/Home'
 import "./style.scss";
 import Community from './components/Community'
 import Adopt from './components/Adopt/Adopt'
-// import Donate from './components/Donate'
 import Signup from './components/Signup'
 import Login from './components/Login'
 import Profile from './components/Profile';
@@ -16,8 +15,6 @@ import Blog from './components/Blog/Blog';
 import CreateBlog from './components/Blog/CreateBlog';
 import PostPet from './components/Adopt/PostPet';
 import ViewPet from './components/Adopt/ViewPet';
-// import Inbox from './components/Inbox';
-// import { Global, css } from '@emotion/react'
 
 function App() {
   const { currentUser } = useContext(AuthContext);
@@ -34,7 +31,6 @@ function App() {
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
         <Route path='/Profile/:uid' element={<Profile />} />
-        {/* <Route path='/inbox' element={privateRoute(<Inbox/>)}></Route> */}
 
         <Route path='/Blog' element={privateRoute(<Blog />)} />
         <Route path='/CreateBlog' element={privateRoute(<CreateBlog />)} />
@@ -44,7 +40,6 @@ function App() {
         <Route path="/PostPet" element={privateRoute(<PostPet />)} />
         <Route path='/ViewPet/:petId' element={privateRoute(<ViewPet />)} />
 
-        {/* <Route path='/Donate' element={privateRoute(<Donate />)} /> */}
         <Route path='/Community' element={privateRoute(<Community />)} />
       </Routes>
     </ChakraProvider>

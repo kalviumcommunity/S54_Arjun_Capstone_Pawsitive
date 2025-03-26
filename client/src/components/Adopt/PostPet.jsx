@@ -8,7 +8,6 @@ import { storage } from '../../firebase/firebase';
 import { AuthContext } from '../../context/AuthContext';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import AddressAutocomplete from '../../sub-components/AutoAddress';
-// import { Steps, Step } from 'chakra-ui-steps'; // Import Steps and Step from chakra-ui-steps
 
 const steps = [
   { title: 'First', description: 'Contact Info' },
@@ -80,7 +79,7 @@ const PostPet = () => {
       const photoURLs = await Promise.all(formData.photos.map(uploadPhoto));
       const updatedFormData = { ...formData, photos: photoURLs };
       console.log("updatedFormData: ", updatedFormData);
-      const res = await axios.post('https://pawsitive-backend-seven.vercel.app/pet/', updatedFormData);
+      const res = await axios.post(`${import.meta.env.VITE_backendURL}/pet/`, updatedFormData);
       console.log("res: ", res);
 
       if (res.status === 201) {
@@ -156,26 +155,6 @@ const PostPet = () => {
       <VStack spacing={{ base: 7, md: 9 }} width={{ base: "90vw", md: "30vw" }} position={"relative"} left={{ base: "5vw", md: "35vw" }} top={"3vw"} borderWidth="1px" borderRadius="30px" overflow="hidden" boxShadow="lg" bg="white" p={4}>
         <Text fontSize="2xl" fontWeight="bold">Post a Pet for Adoption - Step {step}</Text>
         <Progress value={progress} w="80%" />
-        {/* <Stepper size='lg' index={activeStep}>
-          {steps.map((step, index) => (
-            <Step key={index} onClick={() => setActiveStep(index)}>
-              <StepIndicator>
-                <StepStatus
-                  complete={<StepIcon />}
-                  incomplete={<StepNumber />}
-                  active={<StepNumber />}
-                />
-              </StepIndicator>
-
-              <Box flexShrink='0'>
-                <StepTitle>{step.title}</StepTitle>
-                <StepDescription>{step.description}</StepDescription>
-              </Box>
-
-              <StepSeparator />
-            </Step>
-          ))}
-        </Stepper> */}
         <form onSubmit={(e) => e.preventDefault()} style={{ width: '90%' }}>
           {step === 1 && (
             <div style={{ flexDirection: "column", gap: 8 }}>
@@ -203,7 +182,6 @@ const PostPet = () => {
               <Select name="gender" value={formData.gender} onChange={handleInputChange} placeholder="Select Gender">
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
-                {/* <option value="Unknown">Unknown</option> */}
               </Select>
               <FormLabel>Weight (kg)</FormLabel>
               <Input name="weight" value={formData.weight} onChange={handleInputChange} placeholder="Enter weight" type="number" />

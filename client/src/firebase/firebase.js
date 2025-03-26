@@ -1,12 +1,11 @@
 import { initializeApp } from "firebase/app";
-// import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_apiKey || "AIzaSyBLd-6AOqArW29JqFTF9J89Td_KjB1Tju4",
+  apiKey: import.meta.env.VITE_apiKey,
   authDomain: import.meta.env.VITE_authDomain,
   projectId: "pawsitive-64728",
   storageBucket: import.meta.env.VITE_storageBucket,

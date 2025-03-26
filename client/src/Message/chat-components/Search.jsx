@@ -21,9 +21,6 @@ const Search = () => {
   const { currentUser } = useContext(AuthContext);
 
   const handleSearch = async () => {
-    // const trimmedUsername = username.trim().toLowerCase();
-    // const usernameParts = trimmedUsername.split(' ').map(part => part.charAt(0).toUpperCase() + part.slice(1));
-
     const q = query(
       collection(db, "users"),
       where("displayName", "==", username)

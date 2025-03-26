@@ -103,7 +103,6 @@ const Input = () => {
         onKeyDown={(e) => handleKey(e)}
       />
       <div className="send">
-        {/* <img src={Img} alt="" /> */}
         <input
           type="file"
           style={{ display: "none" }}

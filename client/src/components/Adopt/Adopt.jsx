@@ -48,7 +48,7 @@ const Adopt = () => {
   const getPets = async () => {
     try {
       setLoading(true)
-      const response = await axios.get('https://pawsitive-backend-seven.vercel.app/pet/all');
+      const response = await axios.get(`${import.meta.env.VITE_backendURL}/pet/all`);
       setPets(response.data.reverse());
       setFilteredPets(response.data.reverse());
       setLoaded(true)

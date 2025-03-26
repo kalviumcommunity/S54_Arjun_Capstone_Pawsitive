@@ -5,9 +5,9 @@ import { Input, InputGroup, InputRightElement, SimpleGrid, Button, HStack } from
 import { Search2Icon } from '@chakra-ui/icons';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
-import { useNavigate } from 'react-router-dom';
 import BlogCard from './BlogCard';
 import { MdArrowBack,MdArrowForward } from "react-icons/md";
+import Loader from '../../assets/loader-img.gif';
 
 const Blog = () => {
   const [blogs, setBlogs] = useState([]);
@@ -21,7 +21,7 @@ const Blog = () => {
   const fetchBlogs = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get('https://pawsitive-backend-seven.vercel.app/blog/all');
+      const response = await axios.get(`${import.meta.env.VITE_backendURL}/blog/all`);
       const data = response.data;
       const reversedBlogs = [...data].reverse();
       setBlogs(reversedBlogs);
@@ -117,7 +117,7 @@ const Blog = () => {
         />
       </InputGroup>
 
-      {loading ? <img id='loader-img' src='https://dogfood2mydoor.com/static/media/dog_load.3a3190f9.gif' /> : (
+      {loading ? <img id='loader-img' src={Loader} /> : (
         <>
           <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing="2vw" p={{ base: "4vw", md: "3vw 9vw" }}>
             {currentPosts.map((blog) => (
