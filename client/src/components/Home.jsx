@@ -10,6 +10,8 @@ import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Timestamp, doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
+import AdoptMe from '../assets/AdoptMe.jpg';
+import DonateImg from '../assets/DonateImg.jpeg';
 
 const Home = () => {
 
@@ -164,7 +166,7 @@ const Home = () => {
         </Text>
         <Flex flexDirection={{ base: 'column', md: 'row' }} alignItems="center" justifyContent="center">
           <Image
-            src={'https://dm6g3jbka53hp.cloudfront.net/static-images/adopt-me-pet-02032021.jpg'}
+            src={AdoptMe}
             alt="Adopt a pet"
             borderRadius="20px"
             maxH={'75vh'}
@@ -221,7 +223,7 @@ const Home = () => {
             justifyContent="center"
           >
             <Image
-              src={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOIyrXX-dKHYCQuz2iMBdo3PHqlGLo5g8h5Q&s'}
+              src={DonateImg}
               alt="Donate for a cause"
               borderRadius="20px"
               minW={{ base: '80%', md: '40%' }}

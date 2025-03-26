@@ -12,6 +12,7 @@ import { AuthContext } from '../../context/AuthContext';
 import { ChatContext } from '../../context/ChatContext';
 import { FaShareFromSquare } from "react-icons/fa6";
 import Loader from '../../assets/loader-img.gif';
+import Thankyou from '../../assets/Thankyou.gif';
 
 const ViewPet = () => {
   const { petId } = useParams();
@@ -357,7 +358,7 @@ const ViewPet = () => {
         <ModalContent textAlign={"center"} justifyContent={"center"} alignItems={"center"}>
           <ModalCloseButton />
           <img
-            src="https://imgur.com/a/f0Sb2fm"
+            src={Thankyou}
             alt="Thank you"
             style={{ height: "50vh", alignSelf: "center" }}
           />

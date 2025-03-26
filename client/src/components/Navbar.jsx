@@ -46,6 +46,7 @@ import { HamburgerIcon } from '@chakra-ui/icons';
 import PropTypes from 'prop-types';
 import { ChatContext } from '../context/ChatContext';
 import axios from 'axios';
+import emptyNotification from "../assets/emptyNotification.jpeg";
 
 const navLinks = [
     { name: 'Adopt', path: '/Adopt' },
@@ -439,7 +440,7 @@ export default function Navbar() {
                                 </List>)
                                 :
                                 <Box width={'100%'} display={'flex'} justifyContent={'center'}>
-                                    <img src="https://media.licdn.com/dms/image/C5112AQF93ceYWRJUiQ/article-cover_image-shrink_600_2000/0/1534414530337?e=2147483647&v=beta&t=xAsP5WDskRQxiVdIIzMxKs4tOKyBiUGN4g428BV3kLY" alt="empty notification img" />
+                                    <img src={emptyNotification} alt="empty notification img" />
                                 </Box>
                             )
                         )}
